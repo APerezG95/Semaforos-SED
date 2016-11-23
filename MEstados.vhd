@@ -40,7 +40,7 @@ entity MEstados is
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; -- Sensor de vehículos en carretera secundaria
-			  sensorTR: in STD_LOGIC; -- Sensor que detecta la presencia de un tren. Funciona por nivel. Mientras está a 1, hay tren en la via
+			  sensorTR: in STD_LOGIC; -- Sensor que detecta la presencia de un tren. Funciona por nivel. Mientras está a 1, hay tren en la vía. Cuando se deja de pulsar, se va.
            SPV : out  STD_LOGIC; -- Semáforo principal en verde
            SPR : out  STD_LOGIC; -- Semáforo principal en rojo
            SPN : out  STD_LOGIC; -- Semáforo principal en naranja
@@ -66,17 +66,17 @@ architecture Behavioral of MEstados is
 	SIGNAL current_state: STATES;
 	SIGNAL next_state: STATES;
 	
-	signal cambio_estado: std_logic;	-- valor '1' cuando se ha llegado al tiempo requerido
+	SIGNAL cambio_estado: std_logic;	-- valor '1' cuando se ha llegado al tiempo requerido
 	
 	
 	
-	constant tmax: integer :=15;			--tiempo máximo que van a estar los semaforos
-	constant tambar:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar
-	constant tespera:integer:=4;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
+	constant tmax		:integer :=15;			--tiempo máximo que van a estar los semaforos
+	constant tambar	:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar
+	constant tespera	:integer:=4;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
 	
-	signal tiempo:integer range 0 to tmax;
+	signal tiempo		:integer range 0 to tmax;
 	
-	signal cnt: integer range 0 to tmax; --contador 
+	signal cnt			:integer range 0 to tmax; --contador 
 	
 	begin
 	
@@ -136,41 +136,50 @@ architecture Behavioral of MEstados is
 			case current_state is 
 
 				when s0 =>
-						
-						if pulsadorPP = '1' then  
-								tiempo<=	tespera;-- Si se da al pulsador, esperamos el tiempo de espera, 
-								next_state<=s1;				--	y en el siguiente ciclo de reloj se cambiaría de estado al estar activada la bandera de cambio de estado
-								
-						else
-											-- Si no se ha dado a ningún pulsador, cuando la cuenta llegue al máximo se cambia de estado
-								tiempo<=tmax;
-								next_state <= s1;
-								
-							
-						end if;
-						
-				when s1 =>
+				
+					if  rising_edge(sensorTR) then
+						next_state<= t1;
+					elsif sensorCS = '1' or pulsadorPP = '1' then
+						next_state <=  s1;	
 					
-							tiempo<=tambar;
-							next_state <= s2;
-							
+					end if;
+																	
+				when s1 =>
+				
+					if  rising_edge(sensorTR) then
+						next_state<= t1;
+					else
+						next_state <= s2;
+					end if;		
+										
 				when s2 =>
 						
-						if (pulsadorPP = '1' or pulsadorPS = '1') then
-								tiempo<=tespera; 
-								next_state<=s3;		
-																
-						else
-								tiempo<=tmax; 
-								next_state <= s3;
+					if  rising_edge(sensorTR) then
+						next_state<= t1;
+					elsif pulsadorPS = '1' then
+						next_state <= s3;					
 							
 						end if;
 				
 				when s3 =>
 							
-							tiempo<=tambar;
-							next_state <= s0;
+					if  rising_edge(sensorTR) then
+						next_state<= t1;
+					else
+						next_state <= s0;
+					end if;
+				
+				when t1 =>
+				
+					if falling_edge(sensorTR) then
 					
+						next_state <= t2;
+						
+					end if;
+				
+				when t2 =>
+				
+					next_state <= s0;															
 						
 				when others => next_state <= s0;
 
@@ -189,68 +198,68 @@ architecture Behavioral of MEstados is
 		case current_state is 
 
 			when s0 =>
-					SPV      <= '1'
-					SPR      <= '0'
-					SPN      <= '0'
-					PPV      <= '0'
-					PPVP     <= '0'
-					PPR      <= '1'
-					SSV      <= '0'
-					SSR      <= '1'
-					SSN      <= '0'
-					PSV      <= '1'
-					PSVP     <= '0'
-					PSR      <= '0'
-					trainIN  <= '0'
-				   trainOUT <= '0'
+					SPV      <= '1';
+					SPR      <= '0';
+					SPN      <= '0';
+					PPV      <= '0';
+					PPVP     <= '0';
+					PPR      <= '1';
+					SSV      <= '0';
+					SSR      <= '1';
+					SSN      <= '0';
+					PSV      <= '1';
+					PSVP     <= '0';
+					PSR      <= '0';
+					trainIN  <= '0';
+				   trainOUT <= '0';
 					
 			when s1 =>
-					SPV      <= '0'
-					SPR      <= '0'
-					SPN      <= '1'
-					PPV      <= '0'
-					PPVP     <= '0'
-					PPR      <= '0'
-					SSV      <= '0'
-					SSR      <= '1'
-					SSN      <= '0'
-					PSV      <= '1'
-					PSVP     <= '1'
-					PSR      <= '0'
-					trainIN  <= '0'
-				   trainOUT <= '0'
+					SPV      <= '0';
+					SPR      <= '0';
+					SPN      <= '1';
+					PPV      <= '0';
+					PPVP     <= '0';
+					PPR      <= '0';
+					SSV      <= '0';
+					SSR      <= '1';
+					SSN      <= '0';
+					PSV      <= '1';
+					PSVP     <= '1';
+					PSR      <= '0';
+					trainIN  <= '0';
+				   trainOUT <= '0';
 
 			when s2 =>
-					SPV      <= '0'
-					SPR      <= '1'
-					SPN      <= '0'
-					PPV      <=	'1'
-					PPVP     <= '0'
-					PPR      <= '0'
-					SSV      <= '1'
-					SSR      <=	'0'
-					SSN      <=	'0'
-					PSV      <= '0'
-					PSVP     <= '0'
-					PSR      <= '1'
-					trainIN  <= '0'
-				   trainOUT <= '0'
+					SPV      <= '0';
+					SPR      <= '1';
+					SPN      <= '0';
+					PPV      <=	'1';
+					PPVP     <= '0';
+					PPR      <= '0';
+					SSV      <= '1';
+					SSR      <=	'0';
+					SSN      <=	'0';
+					PSV      <= '0';
+					PSVP     <= '0';
+					PSR      <= '1';
+					trainIN  <= '0';
+				   trainOUT <= '0';
 			
 			when s3 =>
-					SPV      <= '0'
-					SPR      <= '1'
-					SPN      <= '0'
-					PPV      <=	'1'
-					PPVP     <= '1'
-					PPR      <= '0'
-					SSV      <= '0'
-					SSR      <=	'0'
-					SSN      <=	'1'
-					PSV      <= '0'
-					PSVP     <= '0'
-					PSR      <= '1'
-					trainIN  <= '0'
-				   trainOUT <= '0'
+					SPV      <= '0';
+					SPR      <= '1';
+					SPN      <= '0';
+					PPV      <=	'1';
+					PPVP     <= '1';
+					PPR      <= '0';
+					SSV      <= '0';
+					SSR      <=	'0';
+					SSN      <=	'1';
+					PSV      <= '0';
+					PSVP     <= '0';
+					PSR      <= '1';
+					trainIN  <= '0';
+				   trainOUT <= '0';
 					
 			when t1 => 
 					SPV      <= '0';
@@ -301,5 +310,5 @@ architecture Behavioral of MEstados is
 		end case;
 
 	end process;
-
+	
 end Behavioral;
