@@ -35,7 +35,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity top is
 		port (			
-			  clk : in  STD_LOGIC; -- Reloj
+			  clkt9 : in  STD_LOGIC; -- Reloj
            rst : in  STD_LOGIC; -- Reset asíncrono
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
@@ -112,7 +112,7 @@ begin
 			  pulsadorPP => pulsadorPP, 
 			  pulsadorPS =>  pulsadorPS, 
 			  sensorCS => sensorCS,
-			  senorTR => sensorTR,
+			  sensorTR => sensorTR,
 			  SPV => SPV,
 			  SPR =>	SPR, 
 			  SPN => SPN,
@@ -129,7 +129,7 @@ begin
 			  trainout => trainout
 	);
 	Inst_DivFrec:DFrecuencia Port map (
-			entrada=>entrada,
+			entrada=>clkt9,
 			reset=>rst,
 			salida=>clksignal
 		);
