@@ -69,13 +69,14 @@ architecture Behavioral of MEstados is
 	SIGNAL cambio_estado: std_logic;	-- valor '1' cuando se ha llegado al tiempo requerido
 	
 	
-	
-	constant tmax		:integer :=15;			--tiempo máximo que van a estar los semaforos
-	constant tambar	:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar
-	constant tespera	:integer:=4;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
+
+	constant tambar						:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar y los de los peatones parpadeando
+	constant tesperapeatones			:integer:=5;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
+	constant tesperacoches				:integer:=3;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
+	constant tcarreterasecundaria 	:integer:=10;			--tiempo en el que están pasando coches por la carretera secundaria si ningún peatón pulsa pulsador.
+	constant tmax							:integer:=120;       --constante auxiliar para poder asignar señales temporales
 	
 	signal tiempo		:integer range 0 to tmax;
-	
 	signal cnt			:integer range 0 to tmax; --contador 
 	
 	begin
@@ -139,8 +140,12 @@ architecture Behavioral of MEstados is
 				
 					if  rising_edge(sensorTR) then
 						next_state<= t1;
-					elsif sensorCS = '1' or pulsadorPP = '1' then
+					elsif sensorCS = '1' then
+						tiempo<=	tesperacoches;
 						next_state <=  s1;	
+					elsif pulsadorPP='1' then
+						tiempo<=	tesperapeatones;
+						next_state <=  s1;
 					
 					end if;
 																	
@@ -149,6 +154,7 @@ architecture Behavioral of MEstados is
 					if  rising_edge(sensorTR) then
 						next_state<= t1;
 					else
+						tiempo <= tambar;
 						next_state <= s2;
 					end if;		
 										
@@ -156,8 +162,12 @@ architecture Behavioral of MEstados is
 						
 					if  rising_edge(sensorTR) then
 						next_state<= t1;
-					elsif pulsadorPS = '1' then
-						next_state <= s3;					
+					elsif pulsadorPS = '1'  then
+						tiempo <= tesperapeatones;
+						next_state <= s3;	
+					else
+					   tiempo<= tcarreterasecundaria;
+						next_state <= s3;	
 							
 						end if;
 				
@@ -166,19 +176,18 @@ architecture Behavioral of MEstados is
 					if  rising_edge(sensorTR) then
 						next_state<= t1;
 					else
+						tiempo<= tambar;
 						next_state <= s0;
 					end if;
 				
 				when t1 =>
 				
 					if falling_edge(sensorTR) then
-					
 						next_state <= t2;
-						
 					end if;
 				
 				when t2 =>
-				
+					tiempo<= tambar;
 					next_state <= s0;															
 						
 				when others => next_state <= s0;
