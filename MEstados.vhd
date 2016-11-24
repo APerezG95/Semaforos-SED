@@ -128,7 +128,7 @@ architecture Behavioral of MEstados is
 --------------- PRÓXIMO ESTADO -------------
 
 		
-	proximo_estado: process (current_state, pulsadorPP, pulsadorPS)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
+	proximo_estado: process (current_state, pulsadorPP, pulsadorPS, sensorTR, sensorCS)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
 	
 		begin 
 
