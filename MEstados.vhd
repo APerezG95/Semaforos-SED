@@ -73,7 +73,7 @@ architecture Behavioral of MEstados is
 	constant tambar						:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar y los de los peatones parpadeando
 	constant tesperapeatones			:integer:=5;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
 	constant tesperacoches				:integer:=3;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
-	constant tcarreterasecundaria 	:integer:=10;			--tiempo en el que están pasando coches por la carretera secundaria si ningún peatón pulsa pulsador.
+	constant tcarreterasecundaria 	:integer:=8;			--tiempo en el que están pasando coches por la carretera secundaria si ningún peatón pulsa pulsador.
 	constant tmax							:integer:=120;       --constante auxiliar para poder asignar señales temporales
 	
 	signal tiempo		:integer range 0 to tmax;
@@ -95,14 +95,14 @@ architecture Behavioral of MEstados is
 			elsif rising_edge(clk) then
 			
 					if cambio_estado='1' then
-						current_state<=next_state;			-- se cambia de estado, se reinicia la cuenta y se pone a cero la bandera
+						current_state<=next_state;			-- se cambia de estado
 												
 					end if;
 				end if;						
 	end process;
 	
 	
-----------------------CONTADOR------------------
+---------------- CONTADOR --------------------
 	
 	contador :process (clk)
 		
@@ -116,7 +116,7 @@ architecture Behavioral of MEstados is
 						
 					elsif cnt=tiempo then
 						cambio_estado<='1';
-						cnt<=0;
+						cnt<=0;									-- se reinicia la cuenta y se pone a cero la bandera
 						
 					end if;
 				
@@ -125,7 +125,7 @@ architecture Behavioral of MEstados is
 		
 		
 		
------------------- PRÓXIMO ESTADO -----------------------------
+--------------- PRÓXIMO ESTADO -------------
 
 		
 	proximo_estado: process (current_state, pulsadorPP, pulsadorPS)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
@@ -138,7 +138,7 @@ architecture Behavioral of MEstados is
 
 				when s0 =>
 				
-					if  rising_edge(sensorTR) then
+					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
 						next_state<= t1;
 					elsif sensorCS = '1' then
 						tiempo<=	tesperacoches;
@@ -151,16 +151,16 @@ architecture Behavioral of MEstados is
 																	
 				when s1 =>
 				
-					if  rising_edge(sensorTR) then
+					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
 						next_state<= t1;
 					else
-						tiempo <= tambar;
+						tiempo <= tambar;							-- tiempo de ambar del semáforo principal
 						next_state <= s2;
 					end if;		
 										
 				when s2 =>
 						
-					if  rising_edge(sensorTR) then
+					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
 						next_state<= t1;
 					elsif pulsadorPS = '1'  then
 						tiempo <= tesperapeatones;
@@ -173,10 +173,10 @@ architecture Behavioral of MEstados is
 				
 				when s3 =>
 							
-					if  rising_edge(sensorTR) then
+					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
 						next_state<= t1;
 					else
-						tiempo<= tambar;
+						tiempo<= tambar;							-- tiempo de ambar del semáforo secundario
 						next_state <= s0;
 					end if;
 				
@@ -187,7 +187,7 @@ architecture Behavioral of MEstados is
 					end if;
 				
 				when t2 =>
-					tiempo<= tambar;
+					tiempo<= tambar;								-- tiempo de ambar del semáforo de peatones secundario
 					next_state <= s0;															
 						
 				when others => next_state <= s0;
