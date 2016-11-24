@@ -34,12 +34,27 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity PSemaforos is
+port(
+	onoff: in std_logic;
+	blinkenable: in std_logic;
+	clk: in std_logic;
+	salida: out std_logic
+);
 end PSemaforos;
 
 architecture Behavioral of PSemaforos is
-
+signal salida_r: std_logic;
 begin
-
-
+	process(onoff, blinkenable, clk)
+begin
+		if onoff='0' then
+			salida_r<='0';
+		elsif blinkenable='0' then
+				salida_r<='1';
+			elsif	clk'event then
+				salida_r <= not salida_r;	
+		end if;
+	end process;
+	salida<=salida_r;
 end Behavioral;
 
