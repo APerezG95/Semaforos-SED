@@ -47,13 +47,20 @@ signal salida_r: std_logic;
 begin
 	process(onoff, blinkenable, clk)
 begin
-		if onoff='0' then
-			salida_r<='0';
-		elsif blinkenable='0' then
-				salida_r<='1';
+		if onoff='1' then
+			salida_r<='1';
+		elsif blinkenable='1' then
+				salida_r<='0';
 			elsif	clk'event then
 				salida_r <= not salida_r;	
 		end if;
+--		if onoff='0' then
+--			salida_r<='0';
+--		elsif blinkenable='0' then
+--				salida_r<='1';
+--			elsif	clk'event then
+--				salida_r <= not salida_r;	
+--		end if;
 	end process;
 	salida<=salida_r;
 end Behavioral;

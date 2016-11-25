@@ -41,6 +41,7 @@ ARCHITECTURE behavior OF MEstados_tb IS
  
     COMPONENT MEstados
     PORT(
+			fastclk: IN std_logic;
          clk : IN  std_logic;
          rst : IN  std_logic;
          pulsadorPP : IN  std_logic;
@@ -67,6 +68,7 @@ ARCHITECTURE behavior OF MEstados_tb IS
 
    --Inputs
    signal clk : std_logic := '0';
+	signal fastclk: std_logic:='0';
    signal rst : std_logic := '0';
    signal pulsadorPP : std_logic := '0';
    signal pulsadorPS : std_logic := '0';

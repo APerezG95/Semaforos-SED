@@ -59,6 +59,7 @@ end top;
 architecture Behavioral of top is	
 	component MEstados is
 	Port ( 	
+			  fastclk: in STD_LOGIC; --Reloj de la FPGA
 			  clk : in  STD_LOGIC; -- Reloj
 			  rst : in  STD_LOGIC; -- Reset asíncrono
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
@@ -107,6 +108,7 @@ signal PSVPsignal: std_logic;
 
 begin
 	Inst_fsm: MEstados Port map(
+			  fastclk => clkt9,
 			  clk => clksignal, 
 			  rst => rst,
 			  pulsadorPP => pulsadorPP, 
