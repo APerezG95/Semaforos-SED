@@ -32,6 +32,8 @@ end DFrecuencia;
 architecture Behavioral of DFrecuencia is
 	signal temporal: STD_LOGIC;
    signal contador: integer range 0 to 24999999 := 0; -- De 50 MHz a 1 Hz
+	--signal contador_fast: integer range 0 to 1 :=0;	-- Lo dejo en comentarios como idea
+	
 begin
 divisor_frecuencia: process (reset, entrada) 
 	begin
