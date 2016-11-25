@@ -93,13 +93,14 @@ ARCHITECTURE behavior OF MEstados_tb IS
 
    -- Clock period definitions
    constant clk_period : time := 1000 ms;
-	constant fastclk_period: time := 20 ns;
+	constant fastclk_period: time := 10 ms;
  
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: MEstados PORT MAP (
           clk => clk,
+			 fastclk => fastclk,
           rst => rst,
           pulsadorPP => pulsadorPP,
           pulsadorPS => pulsadorPS,
@@ -135,9 +136,9 @@ BEGIN
 	fastclk_process :process
    begin
 		fastclk <= '0';
-		wait for clk_period/2;
+		wait for fastclk_period/2;
 		fastclk <= '1';
-		wait for clk_period/2;
+		wait for fastclk_period/2;
    end process;
  
 
