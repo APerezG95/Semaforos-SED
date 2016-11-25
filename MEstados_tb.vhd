@@ -93,6 +93,7 @@ ARCHITECTURE behavior OF MEstados_tb IS
 
    -- Clock period definitions
    constant clk_period : time := 1000 ms;
+	constant fastclk_period: time := 20 ns;
  
 BEGIN
  
@@ -126,6 +127,16 @@ BEGIN
 		clk <= '0';
 		wait for clk_period/2;
 		clk <= '1';
+		wait for clk_period/2;
+   end process;
+ 
+	--FastClock process
+	
+	fastclk_process :process
+   begin
+		fastclk <= '0';
+		wait for clk_period/2;
+		fastclk <= '1';
 		wait for clk_period/2;
    end process;
  
