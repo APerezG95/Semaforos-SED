@@ -93,14 +93,12 @@ ARCHITECTURE behavior OF MEstados_tb IS
 
    -- Clock period definitions
    constant clk_period : time := 1000 ms;
-	constant fastclk_period: time := 10 ms;
  
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: MEstados PORT MAP (
           clk => clk,
-			 fastclk => fastclk,
           rst => rst,
           pulsadorPP => pulsadorPP,
           pulsadorPS => pulsadorPS,
@@ -131,34 +129,24 @@ BEGIN
 		wait for clk_period/2;
    end process;
  
-	--FastClock process
-	
-	fastclk_process :process
-   begin
-		fastclk <= '0';
-		wait for fastclk_period/2;
-		fastclk <= '1';
-		wait for fastclk_period/2;
-   end process;
- 
 
    -- Stimulus process
    --Peatones_principal_stim_proc: process
   -- begin
-	--	pulsadorPP<='1', '0' after 2000 ms;
+	--	pulsadorPP<='0', '1' after 2000 ms;
 	--		wait for clk_period*10;
 	
 	
 	
 	--Peatones_secundario_stim_proc:process
 		--begin
-		--	pulsadorPS<='1', '0' after 2000 ms;
+		--	pulsadorPS<='0', '1' after 2000 ms;
 	--	wait for clk_period*10;
 	
 	QUE_VIENE_EL_TREN_stim_proc:process
 		begin
-			sensorTR<='0', '1' after 1000 ms, '0' after 6000 ms, '1' after 11000 ms,  '0' after 16000 ms; -- ¡OJO: MINIMO 5 SEGUNDOS DE SEPARACION ENTRE FN Y FP, SI NO SE JODE!
-		wait for clk_period*20;
+			sensorTR<='0', '1' after 2000 ms;
+		wait for clk_period*10;
       
    end process;
 

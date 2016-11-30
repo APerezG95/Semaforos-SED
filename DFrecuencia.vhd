@@ -26,14 +26,12 @@ USE ieee.std_logic_1164.ALL;
 entity DFrecuencia is
     Port ( entrada : in  STD_LOGIC;
            reset : in  STD_LOGIC;
-           salida : out  STD_LOGIC
-			  );
+           salida : out  STD_LOGIC);
 end DFrecuencia;
 
 architecture Behavioral of DFrecuencia is
-	signal temporal, temporal_clkfast: STD_LOGIC;
+	signal temporal: STD_LOGIC;
    signal contador: integer range 0 to 24999999 := 0; -- De 50 MHz a 1 Hz
-	
 begin
 divisor_frecuencia: process (reset, entrada) 
 	begin
@@ -49,11 +47,8 @@ divisor_frecuencia: process (reset, entrada)
             end if;
         end if;
     end process; 
-	 
-
 	 salida <= temporal;
-	 
- end Behavioral;
+end Behavioral;
 
 
 
