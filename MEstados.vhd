@@ -35,7 +35,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity MEstados is
     Port ( 	
-			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
+			  --fastclk: in STD_LOGIC; --Reloj a 50Mhz
 			  clk : in  STD_LOGIC; -- Reloj
            rst : in  STD_LOGIC; -- Reset asíncrono
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
@@ -85,7 +85,7 @@ architecture Behavioral of MEstados is
 
 ----------- REGISTRO DE ESTADOS ---------------
 
-	registro_de_estados: process (rst,fastclk)
+	registro_de_estados: process (rst,clk)
 	
 			begin
 			
@@ -93,7 +93,7 @@ architecture Behavioral of MEstados is
 				current_state <= s0;
 				 
 				 
-			elsif rising_edge(fastclk) then
+			elsif clk'event then
 			
 					if cambio_estado='1' then
 						current_state<=next_state;			-- se cambia de estado

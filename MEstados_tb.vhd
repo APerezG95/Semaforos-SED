@@ -41,7 +41,7 @@ ARCHITECTURE behavior OF MEstados_tb IS
  
     COMPONENT MEstados
     PORT(
-			fastclk: IN std_logic;
+			--fastclk: IN std_logic;
          clk : IN  std_logic;
          rst : IN  std_logic;
          pulsadorPP : IN  std_logic;
@@ -68,7 +68,7 @@ ARCHITECTURE behavior OF MEstados_tb IS
 
    --Inputs
    signal clk : std_logic := '0';
-	signal fastclk: std_logic:='0';
+	--signal fastclk: std_logic:='0';
    signal rst : std_logic := '0';
    signal pulsadorPP : std_logic := '0';
    signal pulsadorPS : std_logic := '0';
@@ -93,14 +93,14 @@ ARCHITECTURE behavior OF MEstados_tb IS
 
    -- Clock period definitions
    constant clk_period : time := 1000 ms;
-	constant fastclk_period: time := 10 ms;
+	--constant fastclk_period: time := 10 ms;
  
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: MEstados PORT MAP (
           clk => clk,
-			 fastclk => fastclk,
+			 --fastclk => fastclk,
           rst => rst,
           pulsadorPP => pulsadorPP,
           pulsadorPS => pulsadorPS,
@@ -133,15 +133,15 @@ BEGIN
  
 	--FastClock process
 	
-	fastclk_process :process
-   begin
-		fastclk <= '0';
-		wait for fastclk_period/2;
-		fastclk <= '1';
-		wait for fastclk_period/2;
-   end process;
- 
-
+--	fastclk_process :process
+--   begin
+--		fastclk <= '0';
+--		wait for fastclk_period/2;
+--		fastclk <= '1';
+--		wait for fastclk_period/2;
+--   end process;
+-- 
+--
    -- Stimulus process
    --Peatones_principal_stim_proc: process
   -- begin
@@ -157,7 +157,7 @@ BEGIN
 	
 	QUE_VIENE_EL_TREN_stim_proc:process
 		begin
-			sensorTR<='0', '1' after 2000 ms;
+			sensorTR<='0', '1' after 2000 ms, '0' after 3900ms;
 		wait for clk_period*10;
       
    end process;
