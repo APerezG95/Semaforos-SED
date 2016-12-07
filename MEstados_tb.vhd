@@ -164,8 +164,8 @@ BEGIN
 	
 	QUE_VIENE_EL_TREN_stim_proc:process
 		begin
-			sensorTR<='0', '1' after 2000 ms, '0' after 3900ms;
-		wait for clk_period*10;
+			sensorTR<='0', '1' after 2000 ms, '0' after 6000ms;
+		wait; --for clk_period*10;
       
    end process;
 

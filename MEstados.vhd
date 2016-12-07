@@ -67,7 +67,7 @@ architecture Behavioral of MEstados is
 	SIGNAL current_state: STATES;
 	SIGNAL next_state: STATES;
 	
-	SIGNAL cambio_estado: std_logic;	-- valor '1' cuando se ha llegado al tiempo requerido
+	SIGNAL cambio_estado: std_logic :='0';	-- valor '1' cuando se ha llegado al tiempo requerido
 	
 	
 
@@ -75,7 +75,8 @@ architecture Behavioral of MEstados is
 	constant tesperapeatones			:integer:=5;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
 	constant tesperacoches				:integer:=3;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
 	constant tcarreterasecundaria 	:integer:=8;			--tiempo en el que están pasando coches por la carretera secundaria si ningún peatón pulsa pulsador.
-	constant tmax							:integer:=120;       --constante auxiliar para poder asignar señales temporales
+	constant tmax							:integer:=120
+	;       --constante auxiliar para poder asignar señales temporales
 	
 	signal tiempo		:integer range 0 to tmax;
 	signal cnt			:integer range 0 to tmax; --contador 
@@ -106,7 +107,7 @@ architecture Behavioral of MEstados is
 ---------------- CONTADOR --------------------
 	
 	contador :process (clk)
-		
+
 		begin
 						
 			if rising_edge(clk) then
@@ -116,9 +117,8 @@ architecture Behavioral of MEstados is
 						cambio_estado<='0';
 						
 					elsif cnt=tiempo then
-						cambio_estado<='1';
 						cnt<=0;									-- se reinicia la cuenta y se pone a cero la bandera
-						
+						cambio_estado<='1';
 					end if;
 				
 			end if;
