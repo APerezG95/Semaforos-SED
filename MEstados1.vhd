@@ -36,8 +36,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity MEstados is
   Port ( 	
 			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
-			  --clk : in  STD_LOGIC; -- Reloj
-           rst : in  STD_LOGIC; -- Reset asíncrono
+			  rst : in  STD_LOGIC; -- Reset asíncrono
 			  cnt: in integer range 0 to 120;--Cuenta 
 			  resetcontador: out STD_LOGIC; --Reseteo de la entidad contador
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
@@ -52,6 +51,7 @@ entity MEstados is
            trainOUT : out  STD_LOGIC -- Led que indica que el tren se ha ido y se inicia el estado de transición hacia estado S0
 			); 
 			end Mestados;
+
 
 architecture Behavioral of MEstados is
 
@@ -160,8 +160,7 @@ architecture Behavioral of MEstados is
 		end if;
 	end process;
 	
-	next_state<=current_state;	
-
+	current_state<=next_state;	
 ----------------SALIDAS----------------------
 
 	salidas: process(current_state)

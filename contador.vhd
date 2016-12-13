@@ -37,25 +37,21 @@ end contador;
 
 architecture Behavioral of contador is
 
-
 constant tmax	:integer:=120;       --constante auxiliar para poder asignar señales temporales
-	
-signal tiempo		:integer range 0 to tmax;
-signal cnt			:integer range 0 to tmax; --contador 
+signal cnt		:integer range 0 to tmax:=0; --contador 
  
 begin 
+
 process (clk,reset)
 	begin
-		if rising_edge(clk) then
-			if rising_edge(reset) then --Duda si es por nivel o por flanco.
-				cnt<=0;
-			else 
-				cnt<=0;									-- se reinicia la cuenta y se pone a cero la bandera
-			end if;
+		if rising_edge(reset) then
+			cnt<=0;
+		elsif rising_edge(clk) then
+			cnt<=cnt+1;									-- se reinicia la cuenta y se pone a cero la bandera
 		end if;
-	end process;	
+end process;
+	
 cuenta<=cnt;
-
 
 end Behavioral;
 
