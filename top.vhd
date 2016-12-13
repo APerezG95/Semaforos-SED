@@ -40,7 +40,7 @@ entity top is
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; --
-			  sensorTR:in STD_LOGIC;
+			  sensorTR:	in STD_LOGIC;
            SPV : out  STD_LOGIC; -- Semáforo principal en verde
            SPR : out  STD_LOGIC; -- Semáforo principal en rojo
            SPN : out  STD_LOGIC; -- Semáforo principal en naranja

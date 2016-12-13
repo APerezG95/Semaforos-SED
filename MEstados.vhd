@@ -36,8 +36,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity MEstados is
   Port ( 	
 			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
-			  clk : in  STD_LOGIC; -- Reloj
+			  --clk : in  STD_LOGIC; -- Reloj
            rst : in  STD_LOGIC; -- Reset asíncrono
+			  cnt: in integer range 0 to 120;--Cuenta 
+			  resetcontador: out STD_LOGIC; --Reseteo de la entidad contador
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; -- Sensor de vehículos en carretera secundaria
@@ -45,7 +47,8 @@ entity MEstados is
            SPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 es verde, 010 naranja, 001 rojo)
 			  SSecundario: out STD_LOGIC_VECTOR(2 downto 0);
 			  PPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 verde, 010 rojo, 101 verde parpadeo)
-			  PSecundario: out STD_LOGIC_VECTOR(2 downto 0);	  
+			  PSecundario: out STD_LOGIC_VECTOR(2 downto 0);	
+			
 --			  SPV : out  STD_LOGIC; -- Semáforo principal en verde
 --           SPR : out  STD_LOGIC; -- Semáforo principal en rojo
 --           SPN : out  STD_LOGIC; -- Semáforo principal en naranja
@@ -61,17 +64,23 @@ entity MEstados is
            trainIN : out  STD_LOGIC; -- Led que indica la presencia de un tren en la via y provoca el cierre de los dos semásforos de los coches
            trainOUT : out  STD_LOGIC -- Led que indica que el tren se ha ido y se inicia el estado de transición hacia estado S0
 			); 
+			end Mestados;
 
 architecture Behavioral of MEstados is
 
 	TYPE STATES is (s0, s1, s2, s3, t1, t2);
 
-	SIGNAL current_state: STATES;
-	SIGNAL next_state: STATES;
+	SIGNAL current_state, next_state: STATES;
+	--SIGNAL next_state: STATES;
 	
-	SIGNAL cambio_estado: std_logic :='0';	-- valor '1' cuando se ha llegado al tiempo requerido
+	--SIGNAL cambio_estado: std_logic :='0';	-- valor '1' cuando se ha llegado al tiempo requerido
 	
-	
+	constant verde: std_logic_vector(2 downto 0):="100"; --(100 es verde, 010 naranja, 001 rojo)
+	constant naranja: std_logic_vector(2 downto 0):="010";
+	constant rojo: std_logic_vector(2 downto 0):="001";
+	constant pverde: std_logic_vector(2 downto 0):="100"; --(100 verde, 010 rojo, 101 verde parpadeo)
+	constant pverdeparpadeo: std_logic_vector(2 downto 0):="101";
+	constant projo: std_logic_vector(2 downto 0) :="010";
 
 	constant tambar						:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar y los de los peatones parpadeando
 	constant tesperapeatones			:integer:=5;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
@@ -80,85 +89,97 @@ architecture Behavioral of MEstados is
 	constant tmax							:integer:=120
 	;       --constante auxiliar para poder asignar señales temporales
 	
-	signal tiempo		:integer range 0 to tmax;
-	signal cnt			:integer range 0 to tmax; --contador 
+	--signal tiempo		:integer range 0 to tmax;
+	signal resetcnt		:std_logic; --Reset del contador
+	signal fin_tambar, fin_tesperapeatones, fin_tesperacoches, fin_tcarreterasecundaria :boolean;
+	
 	
 	begin
 	
 
------------ REGISTRO DE ESTADOS ---------------
-
-	registro_de_estados: process (rst,clk)
+------------- REGISTRO DE ESTADOS ---------------
+--
+--	registro_de_estados: process (rst,fastclk)
+--	
+--			begin
+--			
+--			if rst = '1' then 
+--				current_state <= s0;
+--				 
+--				 
+--			elsif fastclk'event then
+--			
+--					if cambio_estado='1' then
+--						current_state<=next_state;			-- se cambia de estado
+--												
+--					end if;
+--				end if;						
+--	end process;
+--	
 	
-			begin
-			
-			if rst = '1' then 
-				current_state <= s0;
-				 
-				 
-			elsif clk'event then
-			
-					if cambio_estado='1' then
-						current_state<=next_state;			-- se cambia de estado
-												
-					end if;
-				end if;						
-	end process;
-	
-	
----------------- CONTADOR --------------------
-	
-	contador :process (clk)
-
-		begin
-						
-			if rising_edge(clk) then
-			
-					if (cnt<tiempo) then
-						cnt<=cnt+1;
-						cambio_estado<='0';
-						
-					elsif cnt=tiempo then
-						cnt<=0;									-- se reinicia la cuenta y se pone a cero la bandera
-						cambio_estado<='1';
-					end if;
-				
-			end if;
-		end process;
+------------------ CONTADOR --------------------
+--	
+--	contador :process (clk)
+--
+--		begin
+--						
+--			if rising_edge(clk) then
+--			
+--					if (cnt<tiempo) then
+--						cnt<=cnt+1;
+--						cambio_estado<='0';
+--						
+--					elsif cnt=tiempo then
+--						cnt<=0;									-- se reinicia la cuenta y se pone a cero la bandera
+--						cambio_estado<='1';
+--					end if;
+--				
+--			end if;
+--		end process;
 		
 		
 		
 --------------- PRÓXIMO ESTADO -------------
 
 		
-	proximo_estado: process (current_state, pulsadorPP, pulsadorPS, sensorTR, sensorCS)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
-	
+	--proximo_estado: process (current_state, pulsadorPP, pulsadorPS, sensorTR, sensorCS)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
+	proximo_estado: process (fastclk,rst)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
+
 		begin 
 
-			next_state<=current_state;
-
-			case current_state is 
-
+			next_state<=current_state;			
+		
+			if rst='1' then
+			next_state<=s0;
+			else
+				case current_state is 
 				when s0 =>
 				
 					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+						resetcnt<='1';
 						next_state<= t1;
 					elsif sensorCS = '1' then
-						tiempo<=	tesperacoches;
-						next_state <=  s1;	
-					elsif pulsadorPP='1' then
-						tiempo<=	tesperapeatones;
+						resetcnt<='1';
+						if fin_tesperacoches then
 						next_state <=  s1;
-					
+						end if;
+					elsif pulsadorPP='1' then
+						resetcnt<='1';
+						if fin_tesperapeatones then
+						next_state <=  s1;
+						end if;
 					end if;
 																	
 				when s1 =>
 				
 					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+						resetcnt<='1';
 						next_state<= t1;
 					else
-						tiempo <= tambar;							-- tiempo de ambar del semáforo principal
+						resetcnt<='1';
+						if fin_tambar then							-- tiempo de ambar del semáforo principal
 						next_state <= s2;
+						end if;
 					end if;		
 										
 				when s2 =>
@@ -166,21 +187,26 @@ architecture Behavioral of MEstados is
 					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
 						next_state<= t1;
 					elsif pulsadorPS = '1'  then
-						tiempo <= tesperapeatones;
-						next_state <= s3;	
-					else
-					   tiempo<= tcarreterasecundaria;
-						next_state <= s3;	
-							
+					   resetcnt<='1';
+						if fin_tesperapeatones then
+						next_state <= s3;
 						end if;
+					else
+						resetcnt<= '1';
+					   if fin_tcarreterasecundaria then
+						next_state <= s3;		
+						end if;
+					end if;
 				
 				when s3 =>
 							
 					if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
 						next_state<= t1;
 					else
-						tiempo<= tambar;							-- tiempo de ambar del semáforo secundario
+						resetcnt<='1';
+						if fin_tambar then						-- tiempo de ambar del semáforo secundario
 						next_state <= s0;
+						end if;
 					end if;
 				
 				when t1 =>
@@ -190,12 +216,14 @@ architecture Behavioral of MEstados is
 					end if;
 				
 				when t2 =>
-					tiempo<= tambar;								-- tiempo de ambar del semáforo de peatones secundario
-					next_state <= s0;															
+					resetcnt<='1';
+					if fin_tambar then								-- tiempo de ambar del semáforo de peatones secundario
+					next_state <= s0;	
+					end if;
 						
 				when others => next_state <= s0;
-
 		end case;
+		end if;
 
 	end process;
 
@@ -246,6 +274,7 @@ salidas: process(current_state)
 				PSecundario<=pverde;
 				trainIN  <= '0';
 				trainOUT <= '0';
+				resetcontador <= resetcnt;
 				
 		when s1 =>
 --					SPV      <= '1';
@@ -284,6 +313,7 @@ salidas: process(current_state)
 				PSecundario<=pverdeparpadeo;
 				trainIN  <= '0';
 				trainOUT <= '0';
+				resetcontador <= resetcnt;
 
 		when s2 =>
 --					SPV      <= '1';
@@ -322,6 +352,7 @@ salidas: process(current_state)
 				PSecundario<=projo;
 				trainIN  <= '0';
 				trainOUT <= '0';
+				resetcontador <= resetcnt;
 		
 		when s3 =>
 --					SPV      <= '1';
@@ -360,6 +391,8 @@ salidas: process(current_state)
 				PSecundario<=pverdeparpadeo;
 				trainIN  <= '0';
 				trainOUT <= '0';
+				resetcontador <= resetcnt;
+			
 
 		when t1 => 
 --					SPV      <= '1';
@@ -398,6 +431,7 @@ salidas: process(current_state)
 				PSecundario<=pverde;
 				trainIN  <= '1';
 				trainOUT <= '0';
+				resetcontador <= resetcnt;
 		
 		when t2 => 
 --					SPV      <= '1';
@@ -460,5 +494,10 @@ salidas: process(current_state)
 
 	end case;
 	end process;
+	
+fin_tambar<=true when cnt=tambar else false;			--tiempo máximo que van a estar los semaforos en ambar y los de los peatones parpadeando
+fin_tesperapeatones<=true when cnt=tesperapeatones else false;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
+fin_tesperacoches<=true when cnt=tesperacoches else false;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
+fin_tcarreterasecundaria<=true when cnt=tcarreterasecundaria else false;			--tiempo en el que están pasando coches por la carretera secundaria si ningún peatón pulsa pulsador.
 	
 end Behavioral;
