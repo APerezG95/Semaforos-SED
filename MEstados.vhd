@@ -34,31 +34,33 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity MEstados is
-    Port ( 	
-			  --fastclk: in STD_LOGIC; --Reloj a 50Mhz
+  Port ( 	
+			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
 			  clk : in  STD_LOGIC; -- Reloj
            rst : in  STD_LOGIC; -- Reset asíncrono
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; -- Sensor de vehículos en carretera secundaria
 			  sensorTR: in STD_LOGIC; -- Sensor que detecta la presencia de un tren. Funciona por nivel. Mientras está a 1, hay tren en la vía. Cuando se deja de pulsar, se va.
-           SPV : out  STD_LOGIC; -- Semáforo principal en verde
-           SPR : out  STD_LOGIC; -- Semáforo principal en rojo
-           SPN : out  STD_LOGIC; -- Semáforo principal en naranja
-           PPV : out  STD_LOGIC; -- Semáforo de peatones principal en verde
-			  PPVP: out	 STD_LOGIC; -- Entrada de habilitación para de la entidad parpadeo de semáforo peatones principal
-           PPR : out  STD_LOGIC; -- Semáforo de peatones principal en rojo
-           SSV : out  STD_LOGIC; -- Semáforo secundario en verde
-           SSR : out  STD_LOGIC; -- Semáforo secundario en rojo
-           SSN : out  STD_LOGIC; -- Semáforo secundario en naranja
-           PSV : out  STD_LOGIC; -- Semáforo de peatones secundario en verde
-			  PSVP:  out	 STD_LOGIC; -- Entrada de habilitación para de la entidad parpadeo de semáforo peatones secundario
-           PSR : out  STD_LOGIC; -- Semáforo de peatones secundario en rojo
+           SPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 es verde, 010 naranja, 001 rojo)
+			  SSecundario: out STD_LOGIC_VECTOR(2 downto 0);
+			  PPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 verde, 010 rojo, 101 verde parpadeo)
+			  PSecundario: out STD_LOGIC_VECTOR(2 downto 0);	  
+--			  SPV : out  STD_LOGIC; -- Semáforo principal en verde
+--           SPR : out  STD_LOGIC; -- Semáforo principal en rojo
+--           SPN : out  STD_LOGIC; -- Semáforo principal en naranja
+--           PPV : out  STD_LOGIC; -- Semáforo de peatones principal en verde
+--			  PPVP: out	 STD_LOGIC; -- Entrada de habilitación para de la entidad parpadeo de semáforo peatones principal
+--           PPR : out  STD_LOGIC; -- Semáforo de peatones principal en rojo
+--           SSV : out  STD_LOGIC; -- Semáforo secundario en verde
+--           SSR : out  STD_LOGIC; -- Semáforo secundario en rojo
+--           SSN : out  STD_LOGIC; -- Semáforo secundario en naranja
+--           PSV : out  STD_LOGIC; -- Semáforo de peatones secundario en verde
+--			  PSVP:  out	 STD_LOGIC; -- Entrada de habilitación para de la entidad parpadeo de semáforo peatones secundario
+--           PSR : out  STD_LOGIC; -- Semáforo de peatones secundario en rojo
            trainIN : out  STD_LOGIC; -- Led que indica la presencia de un tren en la via y provoca el cierre de los dos semásforos de los coches
            trainOUT : out  STD_LOGIC -- Led que indica que el tren se ha ido y se inicia el estado de transición hacia estado S0
 			); 
-end MEstados;
-
 
 architecture Behavioral of MEstados is
 
@@ -201,13 +203,13 @@ architecture Behavioral of MEstados is
 
 ----------------SALIDAS----------------------
 
-	salidas: process(current_state)
-	
-		begin
+salidas: process(current_state)
 
-		case current_state is 
+	begin
 
-			when s0 =>
+	case current_state is 
+
+		when s0 =>
 --					SPV      <= '0';
 --					SPR      <= '1';
 --					SPN      <= '1';
@@ -222,23 +224,30 @@ architecture Behavioral of MEstados is
 --					PSR      <= '1';
 --					trainIN  <= '1';
 --				   trainOUT <= '1';
-					
-					SPV      <= '1';
-					SPR      <= '0';
-					SPN      <= '0';
-					PPV      <= '0';
-					PPVP     <= '0';
-					PPR      <= '1';
-					SSV      <= '0';
-					SSR      <= '1';
-					SSN      <= '0';
-					PSV      <= '1';
-					PSVP     <= '0';
-					PSR      <= '0';
-					trainIN  <= '0';
-				   trainOUT <= '0';
-					
-			when s1 =>
+				
+--				SPV      <= '1';
+--				SPR      <= '0';
+--				SPN      <= '0';
+--				PPV      <= '0';
+--				PPVP     <= '0';
+--				PPR      <= '1';
+--				SSV      <= '0';
+--				SSR      <= '1';
+--				SSN      <= '0';
+--				PSV      <= '1';
+--				PSVP     <= '0';
+--				PSR      <= '0';
+--				trainIN  <= '0';
+--				trainOUT <= '0';
+
+				SPrincipal<=verde;
+				SSecundario<=rojo;
+				PPrincipal<=projo;
+				PSecundario<=pverde;
+				trainIN  <= '0';
+				trainOUT <= '0';
+				
+		when s1 =>
 --					SPV      <= '1';
 --					SPR      <= '1';
 --					SPN      <= '0';
@@ -253,23 +262,30 @@ architecture Behavioral of MEstados is
 --					PSR      <= '1';
 --					trainIN  <= '1';
 --				   trainOUT <= '1';
-					
-					SPV      <= '0';
-					SPR      <= '0';
-					SPN      <= '1';
-					PPV      <= '0';
-					PPVP     <= '0';
-					PPR      <= '1';
-					SSV      <= '0';
-					SSR      <= '1';
-					SSN      <= '0';
-					PSV      <= '1';
-					PSVP     <= '1';
-					PSR      <= '0';
-					trainIN  <= '0';
-				   trainOUT <= '0';
+				
+--				SPV      <= '0';
+--				SPR      <= '0';
+--				SPN      <= '1';
+--				PPV      <= '0';
+--				PPVP     <= '0';
+--				PPR      <= '1';
+--				SSV      <= '0';
+--				SSR      <= '1';
+--				SSN      <= '0';
+--				PSV      <= '1';
+--				PSVP     <= '1';
+--				PSR      <= '0';
+--				trainIN  <= '0';
+--				trainOUT <= '0';
 
-			when s2 =>
+				SPrincipal<=naranja;
+				SSecundario<=rojo;
+				PPrincipal<=projo;
+				PSecundario<=pverdeparpadeo;
+				trainIN  <= '0';
+				trainOUT <= '0';
+
+		when s2 =>
 --					SPV      <= '1';
 --					SPR      <= '0';
 --					SPN      <= '1';
@@ -284,23 +300,30 @@ architecture Behavioral of MEstados is
 --					PSR      <= '0';
 --					trainIN  <= '1';
 --				   trainOUT <= '1';
-										
-					SPV      <= '0';
-					SPR      <= '1';
-					SPN      <= '0';
-					PPV      <=	'1';
-					PPVP     <= '0';
-					PPR      <= '0';
-					SSV      <= '1';
-					SSR      <=	'0';
-					SSN      <=	'0';
-					PSV      <= '0';
-					PSVP     <= '0';
-					PSR      <= '1';
-					trainIN  <= '0';
-				   trainOUT <= '0';
-			
-			when s3 =>
+									
+--				SPV      <= '0';
+--				SPR      <= '1';
+--				SPN      <= '0';
+--				PPV      <=	'1';
+--				PPVP     <= '0';
+--				PPR      <= '0';
+--				SSV      <= '1';
+--				SSR      <=	'0';
+--				SSN      <=	'0';
+--				PSV      <= '0';
+--				PSVP     <= '0';
+--				PSR      <= '1';
+--				trainIN  <= '0';
+--				trainOUT <= '0';
+
+				SPrincipal<=rojo;
+				SSecundario<=verde;
+				PPrincipal<=pverde;
+				PSecundario<=projo;
+				trainIN  <= '0';
+				trainOUT <= '0';
+		
+		when s3 =>
 --					SPV      <= '1';
 --					SPR      <= '0';
 --					SPN      <= '1';
@@ -316,22 +339,29 @@ architecture Behavioral of MEstados is
 --					trainIN  <= '1';
 --				   trainOUT <= '1';
 
-					SPV      <= '0';
-					SPR      <= '1';
-					SPN      <= '0';
-					PPV      <=	'1';
-					PPVP     <= '1';
-					PPR      <= '0';
-					SSV      <= '0';
-					SSR      <=	'0';
-					SSN      <=	'1';
-					PSV      <= '0';
-					PSVP     <= '0';
-					PSR      <= '1';
-					trainIN  <= '0';
-				   trainOUT <= '0';
+--				SPV      <= '0';
+--				SPR      <= '1';
+--				SPN      <= '0';
+--				PPV      <=	'1';
+--				PPVP     <= '1';
+--				PPR      <= '0';
+--				SSV      <= '0';
+--				SSR      <=	'0';
+--				SSN      <=	'1';
+--				PSV      <= '0';
+--				PSVP     <= '0';
+--				PSR      <= '1';
+--				trainIN  <= '0';
+--				trainOUT <= '0';
 
-			when t1 => 
+				SPrincipal<=rojo;
+				SSecundario<=naranja;
+				PPrincipal<=projo;
+				PSecundario<=pverdeparpadeo;
+				trainIN  <= '0';
+				trainOUT <= '0';
+
+		when t1 => 
 --					SPV      <= '1';
 --					SPR      <= '0';
 --					SPN      <= '1';
@@ -346,23 +376,30 @@ architecture Behavioral of MEstados is
 --					PSR      <= '1';
 --					trainIN  <= '0';
 --				   trainOUT <=	'1';	
-					
-					SPV      <= '0';
-					SPR      <= '1';
-					SPN      <= '0';
-					PPV      <= '1';
-					PPVP     <= '0';
-					PPR      <= '0';
-					SSV      <= '0';
-					SSR      <= '1';
-					SSN      <= '0';
-					PSV      <= '1';
-					PSVP     <= '0';
-					PSR      <= '0';
-					trainIN  <= '1';
-				   trainOUT <=	'0';	
-			
-			when t2 => 
+				
+--				SPV      <= '0';
+--				SPR      <= '1';
+--				SPN      <= '0';
+--				PPV      <= '1';
+--				PPVP     <= '0';
+--				PPR      <= '0';
+--				SSV      <= '0';
+--				SSR      <= '1';
+--				SSN      <= '0';
+--				PSV      <= '1';
+--				PSVP     <= '0';
+--				PSR      <= '0';
+--				trainIN  <= '1';
+--				trainOUT <=	'0';	
+
+				SPrincipal<=rojo;
+				SSecundario<=rojo;
+				PPrincipal<=pverde;
+				PSecundario<=pverde;
+				trainIN  <= '1';
+				trainOUT <= '0';
+		
+		when t2 => 
 --					SPV      <= '1';
 --					SPR      <= '0';
 --					SPN      <= '1';
@@ -377,52 +414,51 @@ architecture Behavioral of MEstados is
 --					PSR      <= '1';
 --					trainIN  <= '1';
 --				   trainOUT <=	'0';
-					
-					SPV      <= '0';
-					SPR      <= '1';
-					SPN      <= '0';
-					PPV      <= '1';
-					PPVP     <= '1';
-					PPR      <= '0';
-					SSV      <= '0';
-					SSR      <= '1';
-					SSN      <= '0';
-					PSV      <= '1';
-					PSVP     <= '0';
-					PSR      <= '0';
-					trainIN  <= '0';
-				   trainOUT <=	'1';
-					
-			when others => 
---					SPV      <= '1';
---					SPN      <= '1';
---					PPV      <= '1';
---					PPVP     <= '1';
---					PPR      <= '1';
---					SSV      <= '1';
---					SSR      <= '1';
---					SSN      <= '1';
---					PSV      <= '1';
---					PSVP     <= '1';
---					PSR      <= '1';
---					trainIN  <= '1';
---				   trainOUT <=	'1';	
-					
-					SPV      <= '0';
-					SPN      <= '0';
-					PPV      <= '0';
-					PPVP     <= '0';
-					PPR      <= '0';
-					SSV      <= '0';
-					SSR      <= '0';
-					SSN      <= '0';
-					PSV      <= '0';
-					PSVP     <= '0';
-					PSR      <= '0';
-					trainIN  <= '0';
-				   trainOUT <=	'0';	
-		end case;
+				
+				SPrincipal<=rojo;
+				SSecundario<=rojo;
+				PPrincipal<=pverdeparpadeo;
+				PSecundario<=pverde;
+				trainIN  <= '0';
+				trainOUT <= '1';
+				
+				
+--		when others => 
+----					SPV      <= '1';
+----					SPN      <= '1';
+----					PPV      <= '1';
+----					PPVP     <= '1';
+----					PPR      <= '1';
+----					SSV      <= '1';
+----					SSR      <= '1';
+----					SSN      <= '1';
+----					PSV      <= '1';
+----					PSVP     <= '1';
+----					PSR      <= '1';
+----					trainIN  <= '1';
+----				   trainOUT <=	'1';	
+--				
+----				SPV      <= '0';
+----				SPN      <= '0';
+----				PPV      <= '0';
+----				PPVP     <= '0';
+----				PPR      <= '0';
+----				SSV      <= '0';
+----				SSR      <= '0';
+----				SSN      <= '0';
+----				PSV      <= '0';
+----				PSVP     <= '0';
+----				PSR      <= '0';
+----				trainIN  <= '0';
+----				trainOUT <=	'0';	
+--				SPrincipal<=verde;
+--				SSecundario<=apa;
+--				PPrincipal<=pverde;
+--				PSecundario<=pverde;
+--				trainIN  <= '0';
+--				trainOUT <= '0';
 
+	end case;
 	end process;
 	
 end Behavioral;
