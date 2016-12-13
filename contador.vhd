@@ -32,7 +32,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity contador is
     Port ( clk : in  STD_LOGIC;
            reset : in  STD_LOGIC;
-			  cuenta: out integer range 0 to 120);
+			  cuenta: out integer range 0 to 120
+			  );
 end contador;
 
 architecture Behavioral of contador is
@@ -44,10 +45,17 @@ begin
 
 process (clk,reset)
 	begin
-		if rising_edge(reset) then
-			cnt<=0;
-		elsif rising_edge(clk) then
-			cnt<=cnt+1;									-- se reinicia la cuenta y se pone a cero la bandera
+--		if rising_edge(reset) then
+--			cnt<=0;
+--		elsif falling_edge(clk) then
+--			cnt<=cnt+1;									
+--		end if;
+		if falling_edge(clk) then
+			if reset='1' then
+				cnt<=0;
+			else
+				cnt<=cnt+1;									-- se reinicia la cuenta y se pone a cero la bandera
+			end if;
 		end if;
 end process;
 	
