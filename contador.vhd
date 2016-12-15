@@ -32,7 +32,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity contador is
     Port ( clk : in  STD_LOGIC;
            reset : in  STD_LOGIC;
-			  cuenta: out integer range 0 to 120
+			  tiempo: in integer range 0 to 120;
+			  cambio_estado: out STD_LOGIC
 			  );
 end contador;
 
@@ -59,7 +60,14 @@ process (clk,reset)
 		end if;
 end process;
 	
-cuenta<=cnt;
+process(clk,reset,cnt,tiempo)
+		begin
+			if(cnt=tiempo) then
+				cambio_estado<='1';
+			else
+				cambio_estado<='0';
+			end if;
+end process;
 
 end Behavioral;
 

@@ -34,8 +34,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity top is
-		port (
-		
+		port (		
 			  clkt9 : in  STD_LOGIC; -- Reloj
            rst : in  STD_LOGIC; -- Reset asíncrono
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
@@ -56,7 +55,8 @@ architecture Behavioral of top is
 	Port ( 	
 			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
 			  rst : in  STD_LOGIC; -- Reset asíncrono
-			  cnt: in integer range 0 to 120;--Cuenta 
+			  cambio_estado: in STD_LOGIC; --
+			  tiempo: out integer range 0 to 120;--Cuenta 
 			  resetcontador: out STD_LOGIC; --Reseteo de la entidad contador
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
@@ -91,9 +91,11 @@ architecture Behavioral of top is
 	component contador is
    port ( clk : in  STD_LOGIC;
            reset : in  STD_LOGIC;
-			  cuenta: out integer range 0 to 120
+			  tiempo: in integer range 0 to 120;
+			  cambio_estado: out STD_LOGIC
 	);
 	end component;
+		
 
 signal clksignal:  std_logic;
 signal PPVsignal:  std_logic;
@@ -104,13 +106,15 @@ signal PSVPsignal: std_logic;
 signal resetcnt: std_logic;
 signal cuenta: integer range 0 to 120;
 signal PPrincipalaux2,PPrincipalaux0,PSecundarioaux2,PSecundarioaux0: std_logic;
+signal cambio: std_logic;
 
 
 begin
 	Inst_fsm: MEstados Port map(
 			  fastclk=>clksignal,
-			  rst=>rst,  
-			  cnt=>cuenta,
+			  rst=>rst,
+			  cambio_estado=>	cambio,	
+			  tiempo=>cuenta,
 			  resetcontador=>resetcnt,
 			  pulsadorPP=>pulsadorPP,
 			  pulsadorPS=>pulsadorPS,
@@ -147,7 +151,8 @@ begin
 	Inst_Contador:contador Port map (
 			clk=>clkt9, 
          reset=>resetcnt,
-			cuenta=>cuenta
+			tiempo=>cuenta,
+			cambio_estado=>cambio
 	);
 	
 
