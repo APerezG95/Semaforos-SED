@@ -34,23 +34,18 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity top is
-		port (			
+		port (
+		
 			  clkt9 : in  STD_LOGIC; -- Reloj
            rst : in  STD_LOGIC; -- Reset asíncrono
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; --
 			  sensorTR:	in STD_LOGIC;
-           SPV : out  STD_LOGIC; -- Semáforo principal en verde
-           SPR : out  STD_LOGIC; -- Semáforo principal en rojo
-           SPN : out  STD_LOGIC; -- Semáforo principal en naranja
-           PPV : out  STD_LOGIC; -- Semáforo de peatones principal en verde
-           PPR : out  STD_LOGIC; -- Semáforo de peatones principal en rojo
-           SSV : out  STD_LOGIC; -- Semáforo secundario en verde
-           SSR : out  STD_LOGIC; -- Semáforo secundario en rojo
-           SSN : out  STD_LOGIC; -- Semáforo secundario en naranja
-           PSV : out  STD_LOGIC; -- Semáforo de peatones secundario en verde
-           PSR : out  STD_LOGIC; -- Semáforo de peatones secundario en rojo
+			  SPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 es verde, 010 naranja, 001 rojo)
+			  SSecundario: out STD_LOGIC_VECTOR(2 downto 0);
+			  PPrincipalTop: out STD_LOGIC_VECTOR(1 downto 0); --(10 es verde, 01 es rojo)
+			  PSecundarioTop: out STD_LOGIC_VECTOR(1 downto 0);	
            trainIN  : out  STD_LOGIC; -- Semáforo para girar a la derecha
            trainOUT : out  STD_LOGIC -- Semáforo en ámbar
 		);
@@ -59,30 +54,23 @@ end top;
 architecture Behavioral of top is	
 	component MEstados is
 	Port ( 	
-			  fastclk: in STD_LOGIC; --Reloj de la FPGA
-			  clk : in  STD_LOGIC; -- Reloj
+			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
 			  rst : in  STD_LOGIC; -- Reset asíncrono
+			  cnt: in integer range 0 to 120;--Cuenta 
+			  resetcontador: out STD_LOGIC; --Reseteo de la entidad contador
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; -- Sensor de vehículos en carretera secundaria
 			  sensorTR: in STD_LOGIC; -- Sensor que detecta la presencia de un tren. Funciona por nivel. Mientras está a 1, hay tren en la vía. Cuando se deja de pulsar, se va.
-			  SPV : out  STD_LOGIC; -- Semáforo principal en verde
-			  SPR : out  STD_LOGIC; -- Semáforo principal en rojo
-			  SPN : out  STD_LOGIC; -- Semáforo principal en naranja
-			  PPV : out  STD_LOGIC; -- Semáforo de peatones principal en verde
-			  PPVP: out	 STD_LOGIC; -- Entrada de habilitación para de la entidad parpadeo de semáforo peatones principal
-			  PPR : out  STD_LOGIC; -- Semáforo de peatones principal en rojo
-			  SSV : out  STD_LOGIC; -- Semáforo secundario en verde
-			  SSR : out  STD_LOGIC; -- Semáforo secundario en rojo
-			  SSN : out  STD_LOGIC; -- Semáforo secundario en naranja
-			  PSV : out  STD_LOGIC; -- Semáforo de peatones secundario en verde
-			  PSVP:  out	 STD_LOGIC; -- Entrada de habilitación para de la entidad parpadeo de semáforo peatones secundario
-			  PSR : out  STD_LOGIC; -- Semáforo de peatones secundario en rojo
-			  trainIN : out  STD_LOGIC; -- Led que indica la presencia de un tren en la via y provoca el cierre de los dos semásforos de los coches
-			  trainOUT : out  STD_LOGIC -- Led que indica que el tren se ha ido y se inicia el estado de transición hacia estado S0
+           SPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 es verde, 010 naranja, 001 rojo)
+			  SSecundario: out STD_LOGIC_VECTOR(2 downto 0);
+			  PPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 verde, 010 rojo, 101 verde parpadeo)
+			  PSecundario: out STD_LOGIC_VECTOR(2 downto 0);	
+           trainIN : out  STD_LOGIC; -- Led que indica la presencia de un tren en la via y provoca el cierre de los dos semásforos de los coches
+           trainOUT : out  STD_LOGIC -- Led que indica que el tren se ha ido y se inicia el estado de transición hacia estado S0
 	); 
 	end component;
-
+	
 	component PSemaforos is
 	port(
 			onoff: in std_logic;
@@ -99,6 +87,13 @@ architecture Behavioral of top is
 			salida : out  STD_LOGIC
 	);
 	end component;
+	
+	component contador is
+   port ( clk : in  STD_LOGIC;
+           reset : in  STD_LOGIC;
+			  cuenta: out integer range 0 to 120
+	);
+	end component;
 
 signal clksignal:  std_logic;
 signal PPVsignal:  std_logic;
@@ -106,29 +101,31 @@ signal PPVPsignal: std_logic;
 signal PSVsignal:  std_logic;
 signal PSVPsignal: std_logic;
 
+signal resetcnt: std_logic;
+signal cuenta: integer range 0 to 120;
+signal PPrincipalaux2,PPrincipalaux0,PSecundarioaux2,PSecundarioaux0: std_logic;
+
+
 begin
 	Inst_fsm: MEstados Port map(
-			  fastclk => clkt9,
-			  clk => clksignal, 
-			  rst => rst,
-			  pulsadorPP => pulsadorPP, 
-			  pulsadorPS =>  pulsadorPS, 
-			  sensorCS => sensorCS,
-			  sensorTR => sensorTR,
-			  SPV => SPV,
-			  SPR =>	SPR, 
-			  SPN => SPN,
-			  PPV =>	PPVsignal,
-			  PPVP => PPVPsignal,
-			  PPR =>	PPR,
-			  SSV =>	SSV,
-			  SSR => SSR,
-			  SSN =>	SSN,
-			  PSV => PSVsignal,
-			  PSVP => PSVPsignal,
-			  PSR => PSR,
-			  trainin => trainin,
-			  trainout => trainout
+			  fastclk=>clksignal,
+			  rst=>rst,  
+			  cnt=>cuenta,
+			  resetcontador=>resetcnt,
+			  pulsadorPP=>pulsadorPP,
+			  pulsadorPS=>pulsadorPS,
+			  sensorCS=>sensorCS, 
+			  sensorTR=>sensorTR, 
+           SPrincipal=>SPrincipal,
+			  SSecundario=>SSecundario,
+			  PPrincipal(0)=>PPrincipalaux0,
+			  PPrincipal(1)=>PPrincipaltop(0),
+			  PPrincipal(2)=>PPrincipalaux2,
+			  PSecundario(0)=>PSecundarioaux0,
+			  PSecundario(1)=>PSecundariotop(0),
+			  PSecundario(2)=>PSecundarioaux2,
+           trainIN=>trainIN,
+           trainOUT=>trainOUT
 	);
 	Inst_DivFrec:DFrecuencia Port map (
 			entrada=>clkt9,
@@ -136,16 +133,21 @@ begin
 			salida=>clksignal
 		);
 	Inst_PSP:PSemaforos Port map (
-			onoff=>PPVsignal,
-			blinkenable=>PPVPsignal,
+			onoff=>PPrincipalaux2,
+			blinkenable=>PPrincipalaux0,
 			clk=>clksignal,
-			salida=>PPV
+			salida=>PPrincipaltop(1)
 	);
 	Inst_PSS:PSemaforos Port map (
-			onoff=>PSVsignal,
-			blinkenable=>PSVPsignal,
+			onoff=>PSecundarioaux2,
+			blinkenable=>PSecundarioaux0,
 			clk=>clksignal,
-			salida=>PSV
+			salida=>PSecundariotop(1)
+	);
+	Inst_Contador:contador Port map (
+			clk=>clkt9, 
+         reset=>resetcnt,
+			cuenta=>cuenta
 	);
 	
 

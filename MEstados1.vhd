@@ -88,8 +88,8 @@ architecture Behavioral of MEstados is
 			if rising_edge(fastclk) then
 				case current_state is 
 					when s0 =>
-					
-						if  rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+		
+						if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
 							next_state<= t1;
 						elsif sensorCS = '1' then
 							resetcnt<='1';

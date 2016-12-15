@@ -51,7 +51,7 @@ process (clk,reset)
 --			cnt<=cnt+1;									
 --		end if;
 		if falling_edge(clk) then
-			if reset='1' then
+			if rising_edge(reset) then
 				cnt<=0;
 			else
 				cnt<=cnt+1;									-- se reinicia la cuenta y se pone a cero la bandera

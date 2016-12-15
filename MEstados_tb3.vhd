@@ -115,7 +115,7 @@ BEGIN
    Peatones_principal_stim_proc: process
    begin
 		cnt<=0, 1 after 2000 ms, 2 after 3000 ms, 3 after 4000 ms, 4 after 5000 ms, 5 after 6000 ms, 6 after 7000 ms, 7 after 8000 ms, 8 after 9000 ms,9 after 10000 ms, 10 after 11000 ms;
-		pulsadorPP<='0', '1' after 1000 ms, '0' after 3000ms, '1' after 4000 ms;
+		sensorTR<='0', '1' after 1000 ms, '0' after 3000ms;--, '1' after 4000 ms;
 			wait for tsimulacion;
 	
 	end process;  
