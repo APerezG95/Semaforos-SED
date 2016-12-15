@@ -71,7 +71,7 @@ ARCHITECTURE behavior OF MEstados_tb4 IS
 
  	--Outputs
 	signal tiempo : integer range 0 to 120 := 0;
-   signal resetcontador : std_logic;
+   signal resetcontador : std_logic :='1';
    signal SPrincipal : std_logic_vector(2 downto 0);
    signal SSecundario : std_logic_vector(2 downto 0);
    signal PPrincipal : std_logic_vector(2 downto 0);

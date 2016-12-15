@@ -74,7 +74,7 @@ architecture Behavioral of MEstados is
 	constant tmax							:integer:=120;       --constante auxiliar para poder asignar señales temporales
 	constant trenaux 						:integer:=1; 			--constante auxiliar de transicion
 	
-	signal resetcnt:std_logic; --Reset del contador
+	--signal resetcontador:std_logic; --Reset del contador
 	signal fin_tambar, fin_tesperapeatones, fin_tesperacoches, fin_tcarreterasecundaria :boolean;
 	
 	begin
@@ -88,7 +88,7 @@ architecture Behavioral of MEstados is
 				current_state <= s0;
 			elsif rising_edge(fastclk) then
 					if cambio_estado='1' then
-						--resetcnt<='0';
+						--resetcontador<='0';
 						current_state<=next_state;			-- se cambia de estado, se reinicia la cuenta y se pone a cero la bandera						
 					end if;
 			end if;						
@@ -97,35 +97,37 @@ architecture Behavioral of MEstados is
 
 --------------- PRÓXIMO ESTADO -------------
 	
-	proximo_estado: process (current_state, pulsadorPP, pulsadorPS, sensorCS, sensorTR)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
+	proximo_estado: process (current_state,next_state, pulsadorPP, pulsadorPS, sensorCS, sensorTR)--la sentencia WAIT solo se puede usar en un proceso SIN LISTA DE SENSIBILIDAD
 	begin
+			if current_state/=next_state then
+				resetcontador<='0';
+			end if;
+				
 			case current_state is 
 				when s0 =>
 	
 					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=trenaux;
-						resetcnt<='0';
 						next_state<= t1;	
 					elsif rising_edge(sensorCS) then
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=tesperacoches;
 						next_state<= s1;
 					elsif rising_edge(pulsadorPP) then
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=tesperapeatones;
-						resetcnt<='0';
 						next_state<= s1;
 					end if;
 																	
 				when s1 =>
 				
 					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=trenaux;
 						next_state<= t1;
 					else
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=tambar;							-- tiempo de ambar del semáforo principal
 						next_state <= s2;
 					end if;		
@@ -133,15 +135,15 @@ architecture Behavioral of MEstados is
 				when s2 =>
 						
 					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=trenaux;
 						next_state<= t1;
 					elsif rising_edge(pulsadorPS) then
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=tesperapeatones; 
 						next_state <= s3;
 					else
-						resetcnt<= '1';
+						resetcontador<= '1';
 						tiempo<=tcarreterasecundaria;
 						next_state <= s3;		
 					end if;
@@ -149,11 +151,11 @@ architecture Behavioral of MEstados is
 				when s3 =>
 							
 					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=tambar;
 						next_state<= t1;
 					else
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=tambar;				-- tiempo de ambar del semáforo secundario
 						next_state <= s0;
 					end if;
@@ -161,13 +163,13 @@ architecture Behavioral of MEstados is
 				when t1 =>
 				
 					if falling_edge(sensorTR) then
-						resetcnt<='1';
+						resetcontador<='1';
 						tiempo<=trenaux;
 						next_state<=t2;
 					end if;
 				
 				when t2 =>
-					resetcnt<='1';
+					resetcontador<='1';
 					tiempo<=tambar; 
 					next_state <= s0;	
 							
@@ -190,7 +192,7 @@ architecture Behavioral of MEstados is
 					PSecundario<=pverde;
 					trainIN  <= '0';
 					trainOUT <= '0';
-					resetcontador <= resetcnt;
+					--resetcontador <= resetcnt;
 					
 			when s1 =>
 					SPrincipal<=naranja;
@@ -199,7 +201,7 @@ architecture Behavioral of MEstados is
 					PSecundario<=pverdeparpadeo;
 					trainIN  <= '0';
 					trainOUT <= '0';
-					resetcontador <= resetcnt;
+					--resetcontador <= resetcnt;
 
 			when s2 =>
 					SPrincipal<=rojo;
@@ -208,7 +210,7 @@ architecture Behavioral of MEstados is
 					PSecundario<=projo;
 					trainIN  <= '0';
 					trainOUT <= '0';
-					resetcontador <= resetcnt;
+					--resetcontador <= resetcnt;
 			
 			when s3 =>
 					SPrincipal<=rojo;
@@ -217,7 +219,7 @@ architecture Behavioral of MEstados is
 					PSecundario<=pverdeparpadeo;
 					trainIN  <= '0';
 					trainOUT <= '0';
-					resetcontador <= resetcnt;
+					--resetcontador <= resetcnt;
 				
 
 			when t1 => 
@@ -227,7 +229,7 @@ architecture Behavioral of MEstados is
 					PSecundario<=pverde;
 					trainIN  <= '1';
 					trainOUT <= '0';
-					resetcontador <= resetcnt;
+					--resetcontador <= resetcnt;
 			
 			when t2 => 
 					SPrincipal<=rojo;
@@ -236,7 +238,7 @@ architecture Behavioral of MEstados is
 					PSecundario<=pverde;
 					trainIN  <= '0';
 					trainOUT <= '1';
-					resetcontador <= resetcnt;
+					--resetcontador <= resetcontador;
 					
 					
 	--		when others => 
