@@ -44,20 +44,24 @@ signal cnt		:integer range 0 to tmax:=0; --contador
  
 begin 
 
+--variable interna
+
 process (clk,reset)
+ variable allreset: STD_LOGIC:='0';
 	begin
---		if rising_edge(reset) then
---			cnt<=0;
---		elsif falling_edge(clk) then
---			cnt<=cnt+1;									
---		end if;
 		if falling_edge(clk) then
-			if rising_edge(reset) then
+			if allreset/=reset then 
 				cnt<=0;
 			else
 				cnt<=cnt+1;									-- se reinicia la cuenta y se pone a cero la bandera
 			end if;
+			if rising_edge(clk) then
+				allreset:=reset;
+ 			end if;
 		end if;
+		
+
+		
 end process;
 	
 process(clk,reset,cnt,tiempo)
