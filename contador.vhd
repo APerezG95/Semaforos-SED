@@ -31,6 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity contador is
     Port ( clk : in  STD_LOGIC;
+			  fastclk: in STD_LOGIC;
            reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
 			  cambio_estado: out STD_LOGIC
@@ -41,30 +42,41 @@ architecture Behavioral of contador is
 
 constant tmax	:integer:=120;       --constante auxiliar para poder asignar señales temporales
 signal cnt		:integer range 0 to tmax:=0; --contador 
+signal aux :std_logic;
  
 begin 
 
 --variable interna
-
-process (clk,reset)
- variable allreset: STD_LOGIC:='0';
+process (fastclk,tiempo)
+	variable alltiempo: integer range 0 to 120:=0;
+	begin
+		if rising_edge(fastclk) then		
+			if alltiempo/=tiempo then
+				aux<='1';
+			else 
+				aux<='0';
+			end if;
+			alltiempo:=tiempo;
+		end if;
+end process;
+	
+process (clk,tiempo)
+ --variable allreset: STD_LOGIC:='0';
 	begin
 		if falling_edge(clk) then
-			if allreset/=reset then 
+			if aux='1' then 
 				cnt<=0;
 			else
-				cnt<=cnt+1;									-- se reinicia la cuenta y se pone a cero la bandera
+				cnt<=cnt+1;									
 			end if;
-			if rising_edge(clk) then
-				allreset:=reset;
- 			end if;
+		--	if rising_edge(clk) then
+			--	alltiempo:=tiempo;
+ 			--end if;
 		end if;
-		
-
 		
 end process;
 	
-process(clk,reset,cnt,tiempo)
+process(cnt,tiempo)
 		begin
 			if(cnt=tiempo) then
 				cambio_estado<='1';

@@ -42,6 +42,7 @@ ARCHITECTURE behavior OF contador_tb2 IS
     COMPONENT contador
     PORT(
          clk : IN  std_logic;
+			fastclk: IN std_logic;
          reset : IN  std_logic;
          tiempo :  integer range 0 to 120:=0;
          cambio_estado : OUT  std_logic
@@ -51,6 +52,7 @@ ARCHITECTURE behavior OF contador_tb2 IS
 
    --Inputs
    signal clk : std_logic := '0';
+	signal fastclk : std_logic := '0';
    signal reset : std_logic := '0';
    signal tiempo :  integer range 0 to 120:=5;
 
@@ -59,12 +61,14 @@ ARCHITECTURE behavior OF contador_tb2 IS
 
    -- Clock period definitions
    constant clk_period : time := 1000 ms;
+	constant fastclk_period : time := 1 ms;
  
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: contador PORT MAP (
           clk => clk,
+			 fastclk => fastclk,
           reset => reset,
           tiempo => tiempo,
           cambio_estado => cambio_estado
@@ -78,13 +82,21 @@ BEGIN
 		clk <= '1';
 		wait for clk_period/2;
    end process;
+	
+	fastclk_process :process
+   begin
+		fastclk <= '0';
+		wait for fastclk_period/2;
+		fastclk <= '1';
+		wait for fastclk_period/2;
+   end process;
  
 
    -- Stimulus process
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-		reset<='0', '1' after 2100ms, '0' after 3200ms, '1' after 4200 ms, '0' after 5100ms;
+		tiempo<=10, 2 after 2100ms, 4 after 3200ms, 6 after 4200 ms, 10 after 5100ms;
       wait for 100 ns;	
 
       wait for clk_period*10;
