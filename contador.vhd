@@ -42,38 +42,31 @@ architecture Behavioral of contador is
 
 constant tmax	:integer:=120;       --constante auxiliar para poder asignar señales temporales
 signal cnt		:integer range 0 to tmax:=0; --contador 
-signal aux :std_logic;
+shared variable aux :integer range 0 to 1:=0;--variable interna
  
 begin 
 
---variable interna
 process (fastclk,tiempo)
 	variable alltiempo: integer range 0 to 120:=0;
 	begin
 		if rising_edge(fastclk) then		
 			if alltiempo/=tiempo then
-				aux<='1';
-			else 
-				aux<='0';
+				aux:=aux+1;
 			end if;
 			alltiempo:=tiempo;
 		end if;
 end process;
 	
 process (clk,tiempo)
- --variable allreset: STD_LOGIC:='0';
 	begin
 		if falling_edge(clk) then
-			if aux='1' then 
+			if aux>0 then 
 				cnt<=0;
+				aux:=0;
 			else
 				cnt<=cnt+1;									
 			end if;
-		--	if rising_edge(clk) then
-			--	alltiempo:=tiempo;
- 			--end if;
 		end if;
-		
 end process;
 	
 process(cnt,tiempo)

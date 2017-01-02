@@ -90,6 +90,7 @@ architecture Behavioral of top is
 	
 	component contador is
    port ( clk : in  STD_LOGIC;
+			 fastclk:in STD_LOGIC;
            reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
 			  cambio_estado: out STD_LOGIC
@@ -149,7 +150,8 @@ begin
 			salida=>PSecundariotop(1)
 	);
 	Inst_Contador:contador Port map (
-			clk=>clkt9, 
+			clk=>clksignal,
+			fastclk=>clkt9,
          reset=>resetcnt,
 			tiempo=>cuenta,
 			cambio_estado=>cambio
