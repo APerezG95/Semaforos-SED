@@ -57,7 +57,7 @@ architecture Behavioral of top is
 			  rst : in  STD_LOGIC; -- Reset asíncrono
 			  cambio_estado: in STD_LOGIC; --
 			  tiempo: out integer range 0 to 120;--Cuenta 
-			  resetcontador: out STD_LOGIC; --Reseteo de la entidad contador
+			  --resetcontador: out STD_LOGIC; --Reseteo de la entidad contador
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; -- Sensor de vehículos en carretera secundaria
@@ -91,7 +91,7 @@ architecture Behavioral of top is
 	component contador is
    port ( clk : in  STD_LOGIC;
 			 fastclk:in STD_LOGIC;
-           reset : in  STD_LOGIC;
+           --reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
 			  cambio_estado: out STD_LOGIC
 	);
@@ -104,7 +104,7 @@ signal PPVPsignal: std_logic;
 signal PSVsignal:  std_logic;
 signal PSVPsignal: std_logic;
 
-signal resetcnt: std_logic;
+--signal resetcnt: std_logic;
 signal cuenta: integer range 0 to 120;
 signal PPrincipalaux2,PPrincipalaux0,PSecundarioaux2,PSecundarioaux0: std_logic;
 signal cambio: std_logic;
@@ -116,7 +116,7 @@ begin
 			  rst=>rst,
 			  cambio_estado=>	cambio,	
 			  tiempo=>cuenta,
-			  resetcontador=>resetcnt,
+			  --resetcontador=>resetcnt,
 			  pulsadorPP=>pulsadorPP,
 			  pulsadorPS=>pulsadorPS,
 			  sensorCS=>sensorCS, 
@@ -152,7 +152,7 @@ begin
 	Inst_Contador:contador Port map (
 			clk=>clksignal,
 			fastclk=>clkt9,
-         reset=>resetcnt,
+         --reset=>resetcnt,
 			tiempo=>cuenta,
 			cambio_estado=>cambio
 	);
