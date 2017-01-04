@@ -71,7 +71,7 @@ ARCHITECTURE behavior OF MEstados_tb4 IS
 
  	--Outputs
 	signal tiempo : integer range 0 to 120 := 0;
-   signal resetcontador : std_logic :='1';
+   --signal resetcontador : std_logic :='1';
    signal SPrincipal : std_logic_vector(2 downto 0);
    signal SSecundario : std_logic_vector(2 downto 0);
    signal PPrincipal : std_logic_vector(2 downto 0);
@@ -115,10 +115,12 @@ BEGIN
    -- Stimulus process
    Peatones_principal_stim_proc: process
    begin
-		--cnt<=0, 1 after 2000 ms, 2 after 3000 ms, 3 after 4000 ms, 4 after 5000 ms, 5 after 6000 ms, 6 after 7000 ms, 7 after 8000 ms, 8 after 9000 ms,9 after 10000 ms, 10 after 11000 ms;
 		pulsadorPP<='0', '1' after 1000 ms, '0' after 1010ms;--, '1' after 4000 ms;
 		cambio_estado<='0', '1' after 2000 ms, '0' after 2005 ms, '1' after 3000 ms, '0' after 3005 ms, '1' after 4000 ms, '0' after 4010 ms, '1' after 5000 ms, '0' after 5010 ms;
-			wait; --for tsimulacion;
+		--rst<='0', '1' after 2500ms;
+		wait; --for tsimulacion;
+
+		
 	
 	end process;  
 

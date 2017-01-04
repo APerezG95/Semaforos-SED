@@ -96,18 +96,58 @@ architecture Behavioral of MEstados is
 	proximo_estado: process(current_state, cambio_estado, sensorTR, sensorCS, pulsadorPS, pulsadorPP)
 		begin
 			case current_state is
+--				when s0 =>
+--					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+--						next_state <= t1;	
+--					elsif rising_edge(sensorCS) then
+--						next_state <= s11;
+--					elsif rising_edge(pulsadorPP) then
+--						next_state <= s12;
+--					end if;
+--			
+--				when s1 =>
+--					tiempo <= tambar;
+--					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+--						next_state <= t1;	
+--					elsif cambio_estado = '1' then
+--						next_state <= s2; 
+--					end if;
+--		
+--				when s2 =>
+--					tiempo <= tcarreterasecundaria;
+--					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+--						next_state <= t1;
+--					elsif rising_edge(pulsadorPS) then
+--						next_state <= s13;
+--					elsif cambio_estado = '1' then
+--						next_state <= s3;
+--					end if;
+--						
+--				when s3 =>
+--					tiempo <= tambar;
+--					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+--						next_state <= t1;	
+--					elsif cambio_estado = '1' then
+--						next_state <= s0; 
+--					end if;
+--			
+--				when t1 =>
+--					if falling_edge(sensorTR) then
+--						next_state <= t2;
+--					end if;
+					
 				when s0 =>
-					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
-					elsif rising_edge(sensorCS) then
+					elsif sensorCS='1' then
 						next_state <= s11;
-					elsif rising_edge(pulsadorPP) then
+					elsif pulsadorPP='1' then
 						next_state <= s12;
 					end if;
 			
 				when s1 =>
 					tiempo <= tambar;
-					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
 					elsif cambio_estado = '1' then
 						next_state <= s2; 
@@ -115,9 +155,9 @@ architecture Behavioral of MEstados is
 		
 				when s2 =>
 					tiempo <= tcarreterasecundaria;
-					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;
-					elsif rising_edge(pulsadorPS) then
+					elsif pulsadorPS='1' then
 						next_state <= s13;
 					elsif cambio_estado = '1' then
 						next_state <= s3;
@@ -125,14 +165,14 @@ architecture Behavioral of MEstados is
 						
 				when s3 =>
 					tiempo <= tambar;
-					if rising_edge(sensorTR) then			-- si viene el tren, estado de emergencia T1
+					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
 					elsif cambio_estado = '1' then
 						next_state <= s0; 
 					end if;
 			
 				when t1 =>
-					if falling_edge(sensorTR) then
+					if sensorTR='0' then
 						next_state <= t2;
 					end if;
 
