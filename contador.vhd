@@ -40,27 +40,25 @@ end contador;
 
 architecture Behavioral of contador is
 
-constant tmax	:integer:=120;       --constante auxiliar para poder asignar señales temporales
-signal cnt		:integer range 0 to tmax:=0; --contador 
-shared variable aux :integer range 0 to 1:=0;--variable interna
+constant tmax	:integer:=120;       							--constante auxiliar para poder asignar señales temporales
+signal cnt		:integer range 0 to tmax:=0; 					--contador 
+shared variable aux :integer range 0 to 1 := 0;				--variable interna
+--signal aux_process: integer range 0 to 1 := 0;				
  
 begin 
 
-process (fastclk,tiempo)
-	variable alltiempo: integer range 0 to 120:=0;
+process (fastclk,tiempo,clk)
+	
+	variable alltiempo: integer range 0 to tmax:=0;
 	begin
-		if rising_edge(fastclk) then		
+		if fastclk='1' then		
 			if alltiempo/=tiempo then
 				aux:=aux+1;
 			end if;
 			alltiempo:=tiempo;
 		end if;
-end process;
-	
-process (clk,tiempo)
-	begin
-		if falling_edge(clk) then
-			if aux>0 then 
+		if clk='0' then
+		if aux>0 then 
 				cnt<=0;
 				aux:=0;
 			else
@@ -68,6 +66,18 @@ process (clk,tiempo)
 			end if;
 		end if;
 end process;
+	
+--process (clk,tiempo)
+--	begin
+--		if falling_edge(clk) then
+--			if aux>0 then 
+--				cnt<=0;
+--				aux:=0;
+--			else
+--				cnt<=cnt+1;									
+--			end if;
+--		end if;
+--end process;
 	
 process(cnt,tiempo)
 		begin
