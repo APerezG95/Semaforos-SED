@@ -32,7 +32,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity contador is
     Port ( clk : in  STD_LOGIC;
 			  fastclk: in STD_LOGIC;
-           --reset : in  STD_LOGIC;
+           reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
 			  cambio_estado: out STD_LOGIC
 			  );
@@ -51,7 +51,9 @@ process (fastclk,tiempo)
 	begin
 		if rising_edge(fastclk) then		
 			if alltiempo/=tiempo then
-				aux:=aux+1;
+				if tiempo/=0 then
+					aux:=aux+1;
+				end if;
 			end if;
 			alltiempo:=tiempo;
 		end if;
