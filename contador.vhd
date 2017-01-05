@@ -45,29 +45,13 @@ signal cnt		:integer range 0 to tmax:=0; --contador
 shared variable aux :integer range 0 to 1:=0;--variable interna
  
 begin 
-
-process (fastclk,tiempo)
-	variable alltiempo: integer range 0 to 120:=0;
-	begin
-		if rising_edge(fastclk) then		
-			if alltiempo/=tiempo then
-				if tiempo/=0 then
-					aux:=aux+1;
-				end if;
-			end if;
-			alltiempo:=tiempo;
-		end if;
-end process;
 	
-process (clk,tiempo)
+process (clk,tiempo,reset)
 	begin
-		if falling_edge(clk) then
-			if aux>0 then 
-				cnt<=0;
-				aux:=0;
-			else
-				cnt<=cnt+1;									
-			end if;
+		if reset='1' then
+			cnt<=0;
+		elsif falling_edge(clk) then
+			cnt<=cnt+1;									
 		end if;
 end process;
 	
