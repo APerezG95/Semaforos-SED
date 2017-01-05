@@ -53,11 +53,11 @@ ARCHITECTURE behavior OF DFrecuencia_tb  IS
    signal reset : std_logic := '0';
 
  	--Outputs
-   signal salida : std_logic;
+   signal salida : std_logic := '0';
    -- No clocks detected in port list. Replace <clock> below with 
    -- appropriate port name 
  
-   constant entrada_t : time := 20 ms; 
+   constant entrada_t : time := 1 ms; 
  
 BEGIN
  
@@ -81,9 +81,7 @@ BEGIN
    -- Stimulus process
    stim_proc: process
    begin		
-       reset <= '1'; -- Condiciones iniciales
-        wait for 100 ns;
-        reset <= '0'; 
+       reset <= '0', '1' after 6200 ms, '0' after 6300 ms, '1' after 12200ms, '0' after 13000ms;
         wait;
    end process;
 

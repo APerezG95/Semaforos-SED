@@ -81,6 +81,9 @@ architecture Behavioral of top is
 	end component;
 
 	component DFrecuencia is
+	generic(
+		dato: integer
+	);
 	port( 
 			entrada : in  STD_LOGIC;
 			reset : in  STD_LOGIC;
@@ -132,11 +135,26 @@ begin
            trainIN=>trainIN,
            trainOUT=>trainOUT
 	);
-	Inst_DivFrec:DFrecuencia Port map (
+	Inst_CLK:DFrecuencia 
+	Generic map(
+			dato => 24999999
+	)
+	Port map (
+			entrada=>clkt9,
+			reset=>resetcnt,
+			salida=>clksignal
+	);
+		
+	Inst_Parpadeo:DFrecuencia 
+	Generic map(
+			dato => 14999999
+	)
+	Port map (
 			entrada=>clkt9,
 			reset=>rst,
 			salida=>clksignal
-		);
+	);
+		
 	Inst_PSP:PSemaforos Port map (
 			onoff=>PPrincipalaux2,
 			blinkenable=>PPrincipalaux0,

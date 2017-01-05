@@ -168,8 +168,7 @@ architecture Behavioral of MEstados is
 					next_state <= s13;
 				when aux4 =>
 					next_state <= s3;
-					
-					
+				
 				when others =>
 					next_state <= s0;
 			end case;			

@@ -45,7 +45,7 @@ ARCHITECTURE behavior OF MEstados_tb4 IS
          rst : IN  std_logic;
          cambio_estado : IN  std_logic;
          tiempo : OUT  integer range 0 to 120;
-         --resetcontador : OUT  std_logic;
+         resetcontador : OUT  std_logic;
          pulsadorPP : IN  std_logic;
          pulsadorPS : IN  std_logic;
          sensorCS : IN  std_logic;
@@ -71,7 +71,7 @@ ARCHITECTURE behavior OF MEstados_tb4 IS
 
  	--Outputs
 	signal tiempo : integer range 0 to 120 := 0;
-   --signal resetcontador : std_logic :='1';
+   signal resetcontador : std_logic :='1';
    signal SPrincipal : std_logic_vector(2 downto 0);
    signal SSecundario : std_logic_vector(2 downto 0);
    signal PPrincipal : std_logic_vector(2 downto 0);
@@ -90,7 +90,7 @@ BEGIN
           rst => rst,
           cambio_estado => cambio_estado,
           tiempo => tiempo,
-          --resetcontador => resetcontador,
+          resetcontador => resetcontador,
           pulsadorPP => pulsadorPP,
           pulsadorPS => pulsadorPS,
           sensorCS => sensorCS,

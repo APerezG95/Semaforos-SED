@@ -98,7 +98,7 @@ BEGIN
       -- hold reset state for 100 ns.
 		--tiempo<=10, 2 after 2100ms, 4 after 3200ms, 6 after 4200 ms, 10 after 5100ms;
 			tiempo<=0, 2 after 3100ms, 4 after 5200ms, 6 after 6200 ms, 10 after 7100ms;
-
+			reset<='1', '0' after 900ms, '1' after 2500ms, '0' after 2510ms, '1' after 3900ms, '0' after 4000ms;
       wait for 100 ns;	
 
       wait for clk_period*10;

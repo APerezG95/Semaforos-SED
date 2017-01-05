@@ -24,14 +24,17 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
  
 entity DFrecuencia is
+
+	 Generic ( dato : integer);
     Port ( entrada : in  STD_LOGIC;
            reset : in  STD_LOGIC;
            salida : out  STD_LOGIC);
+			  
 end DFrecuencia;
 
 architecture Behavioral of DFrecuencia is
 	signal temporal: STD_LOGIC;
-   signal contador: integer range 0 to 24999999 := 0; -- De 50 MHz a 1 Hz
+   signal contador: integer range 0 to dato := 0; -- De 50 MHz a 1 Hz
 begin
 divisor_frecuencia: process (reset, entrada) 
 	begin
@@ -39,7 +42,7 @@ divisor_frecuencia: process (reset, entrada)
             temporal <= '0';
             contador <= 0;
         elsif rising_edge(entrada) then
-            if (contador = 24999999) then
+            if (contador = dato) then
                 temporal <= NOT(temporal);
                 contador <= 0;
             else
