@@ -93,7 +93,6 @@ architecture Behavioral of top is
 	
 	component contador is
    port ( clk : in  STD_LOGIC;
-			 fastclk:in STD_LOGIC;
            reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
 			  cambio_estado: out STD_LOGIC
@@ -103,10 +102,10 @@ architecture Behavioral of top is
 
 signal clksignal:  std_logic;
 signal parpadeosignal: std_logic;
-signal PPVsignal:  std_logic;
-signal PPVPsignal: std_logic;
-signal PSVsignal:  std_logic;
-signal PSVPsignal: std_logic;
+--signal PPVsignal:  std_logic;
+--signal PPVPsignal: std_logic;
+--signal PSVsignal:  std_logic;
+--signal PSVPsignal: std_logic;
 
 signal resetcnt: std_logic;
 signal cuenta: integer range 0 to 120;
@@ -158,18 +157,17 @@ begin
 	Inst_PSP:PSemaforos Port map (
 			onoff=>PPrincipalaux2,
 			blinkenable=>PPrincipalaux0,
-			clk=>clksignal,
+			clk=>parpadeosignal,
 			salida=>PPrincipaltop(1)
 	);
 	Inst_PSS:PSemaforos Port map (
 			onoff=>PSecundarioaux2,
 			blinkenable=>PSecundarioaux0,
-			clk=>clksignal,
+			clk=>parpadeosignal,
 			salida=>PSecundariotop(1)
 	);
 	Inst_Contador:contador Port map (
 			clk=>clksignal,
-			fastclk=>clkt9,
          reset=>resetcnt,
 			tiempo=>cuenta,
 			cambio_estado=>cambio

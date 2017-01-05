@@ -31,7 +31,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity contador is
     Port ( clk : in  STD_LOGIC;
-			  fastclk: in STD_LOGIC;
            reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
 			  cambio_estado: out STD_LOGIC

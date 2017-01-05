@@ -74,7 +74,7 @@ ARCHITECTURE behavior OF top_tb IS
    signal trainOUT : std_logic;
 
    -- Clock period definitions
-   constant clkt9_period : time := 20 ns;
+   constant clkt9_period : time := 10 ms;
  
 BEGIN
  
