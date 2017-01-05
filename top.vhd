@@ -102,6 +102,7 @@ architecture Behavioral of top is
 		
 
 signal clksignal:  std_logic;
+signal parpadeosignal: std_logic;
 signal PPVsignal:  std_logic;
 signal PPVPsignal: std_logic;
 signal PSVsignal:  std_logic;
@@ -144,7 +145,6 @@ begin
 			reset=>resetcnt,
 			salida=>clksignal
 	);
-		
 	Inst_Parpadeo:DFrecuencia 
 	Generic map(
 			dato => 14999999
@@ -152,7 +152,7 @@ begin
 	Port map (
 			entrada=>clkt9,
 			reset=>rst,
-			salida=>clksignal
+			salida=>parpadeosignal
 	);
 		
 	Inst_PSP:PSemaforos Port map (

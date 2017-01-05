@@ -33,7 +33,7 @@ entity DFrecuencia is
 end DFrecuencia;
 
 architecture Behavioral of DFrecuencia is
-	signal temporal: STD_LOGIC;
+	signal temporal: STD_LOGIC :='0';
    signal contador: integer range 0 to dato := 0; -- De 50 MHz a 1 Hz
 begin
 divisor_frecuencia: process (reset, entrada) 
