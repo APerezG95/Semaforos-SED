@@ -285,8 +285,8 @@ architecture Behavioral of MEstados is
 			when s3 =>
 					SPrincipal<=rojo;
 					SSecundario<=naranja;
-					PPrincipal<=projo;
-					PSecundario<=pverdeparpadeo;
+					PPrincipal<=pverdeparpadeo;
+					PSecundario<=projo;
 					trainIN  <= '0';
 					trainOUT <= '0';
 					resetcontador <= '0';
