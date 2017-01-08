@@ -82,7 +82,7 @@ architecture Behavioral of top is
 
 	component DFrecuencia is
 	generic(
-		dato: integer
+			dato: integer
 	);
 	port( 
 			entrada : in  STD_LOGIC;

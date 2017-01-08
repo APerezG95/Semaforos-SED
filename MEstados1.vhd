@@ -21,13 +21,8 @@
 -- Additional Comments: 
 --
 ----------------------------------------------------------------------------------
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.all;
-use ieee.std_logic_unsigned.all;
-use ieee.std_logic_arith.all;
-
-
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -39,6 +34,13 @@ use ieee.std_logic_arith.all;
 --use UNISIM.VComponents.all;
 
 entity MEstados is
+  Generic(
+   --Aquí cambiamos logica positiva y negativa facilmente
+	--Para lógica positiva
+		value: std_logic:='1'
+	--Para lógica negativa
+--		value: std_logic:='0' 
+  );
   Port ( 	
 			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
 			  rst : in  STD_LOGIC; -- Reset asíncrono
@@ -65,12 +67,22 @@ architecture Behavioral of MEstados is
 
 	SIGNAL current_state,next_state: STATES:=s0;
 
+	--Aquí cambiamos logica positiva y negativa facilmente
+	--Para lógica positiva
 	constant verde: std_logic_vector(2 downto 0):="100"; --(100 es verde, 010 naranja, 001 rojo)
 	constant naranja: std_logic_vector(2 downto 0):="010";
 	constant rojo: std_logic_vector(2 downto 0):="001";
 	constant pverde: std_logic_vector(2 downto 0):="100"; --(100 verde, 010 rojo, 101 verde parpadeo)
 	constant pverdeparpadeo: std_logic_vector(2 downto 0):="101";
 	constant projo: std_logic_vector(2 downto 0) :="010";
+	
+	--Para lógica negativa
+--	constant verde: std_logic_vector(2 downto 0):="011"; --(011 es verde, 101 naranja, 110 rojo)
+--	constant naranja: std_logic_vector(2 downto 0):="101";
+--	constant rojo: std_logic_vector(2 downto 0):="110";
+--	constant pverde: std_logic_vector(2 downto 0):="011"; --(011 es verde, 101 rojo, 010 verde parpadeo)
+--	constant pverdeparpadeo: std_logic_vector(2 downto 0):="010";
+--	constant projo: std_logic_vector(2 downto 0) :="101";
 
 	constant tambar						:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar y los de los peatones parpadeando
 	constant tesperapeatones			:integer:=5;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
@@ -97,17 +109,17 @@ architecture Behavioral of MEstados is
 		begin
 			case current_state is
 				when s0 =>
-					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
+					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
-					elsif sensorCS='1' then
+					elsif sensorCS=value then
 						next_state <= s11;
-					elsif pulsadorPP='1' then
+					elsif pulsadorPP=value then
 						next_state <= s12;
 					end if;
 			
 				when s1 =>
 					tiempo <= tambar;
-					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
+					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
 					elsif cambio_estado = '1' then
 						next_state <= aux2; 
@@ -115,9 +127,9 @@ architecture Behavioral of MEstados is
 		
 				when s2 =>
 					tiempo <= tcarreterasecundaria;
-					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
+					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;
-					elsif pulsadorPS='1' then
+					elsif pulsadorPS=value then
 						next_state <= aux3;
 					elsif cambio_estado = '1' then
 						next_state <= aux4;
@@ -125,14 +137,14 @@ architecture Behavioral of MEstados is
 						
 				when s3 =>
 					tiempo <= tambar;
-					if sensorTR='1' then			-- si viene el tren, estado de emergencia T1
+					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
 					elsif cambio_estado = '1' then
 						next_state <= s0; 
 					end if;
 			
 				when t1 =>
-					if sensorTR='0' then
+					if sensorTR=not(value) then
 						next_state <= t2;
 					end if;
 

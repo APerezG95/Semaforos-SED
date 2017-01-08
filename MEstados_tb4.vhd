@@ -115,7 +115,7 @@ BEGIN
    -- Stimulus process
    Peatones_principal_stim_proc: process
    begin
-		pulsadorPP<='0', '1' after 1000 ms, '0' after 1010ms;--, '1' after 4000 ms;
+		pulsadorPP<='0', '1' after 1000 ms, '0' after 2010ms;--, '1' after 4000 ms;
 		cambio_estado<='0', '1' after 2000 ms, '0' after 2005 ms, '1' after 3000 ms, '0' after 3005 ms, '1' after 4000 ms, '0' after 4010 ms, '1' after 5000 ms, '0' after 5010 ms;
 		--rst<='0', '1' after 2500ms;
 		wait; --for tsimulacion;

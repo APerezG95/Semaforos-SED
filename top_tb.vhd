@@ -74,7 +74,7 @@ ARCHITECTURE behavior OF top_tb IS
    signal trainOUT : std_logic;
 
    -- Clock period definitions
-   constant clkt9_period : time := 10 ms;
+   constant clkt9_period : time := 20 ns;
  
 BEGIN
  
@@ -108,13 +108,13 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
+      sensorTR<='0', '1' after 1100 ms, '0' after 4000ms;
 
-      wait for clkt9_period*10;
+      wait;
 
       -- insert stimulus here 
 
-      wait;
+      --wait;
    end process;
 
 END;
