@@ -37,9 +37,9 @@ entity MEstados is
   Generic(
    --Aquí cambiamos logica positiva y negativa facilmente
 	--Para lógica positiva
-		value: std_logic:='1'
+		--value: std_logic:='1'
 	--Para lógica negativa
---		value: std_logic:='0' 
+	value: std_logic:='0' 
   );
   Port ( 	
 			  fastclk: in STD_LOGIC; --Reloj a 50Mhz
@@ -50,7 +50,8 @@ entity MEstados is
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; -- Sensor de vehículos en carretera secundaria
-			  sensorTR: in STD_LOGIC; -- Sensor que detecta la presencia de un tren. Funciona por nivel. Mientras está a 1, hay tren en la vía. Cuando se deja de pulsar, se va.
+			  sensorTRin: in STD_LOGIC; -- Sensor que detecta que ha llegado un tren
+			  sensorTRout: in STD_LOGIC; -- Sensor que detecta que se ha ido un tren
            SPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 es verde, 010 naranja, 001 rojo)
 			  SSecundario: out STD_LOGIC_VECTOR(2 downto 0);
 			  PPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 verde, 010 rojo, 101 verde parpadeo)
@@ -69,20 +70,23 @@ architecture Behavioral of MEstados is
 
 	--Aquí cambiamos logica positiva y negativa facilmente
 	--Para lógica positiva
-	constant verde: std_logic_vector(2 downto 0):="100"; --(100 es verde, 010 naranja, 001 rojo)
+	constant verde: std_logic_vector(2 downto 0):="001"; --(100 es verde, 010 naranja, 001 rojo)
 	constant naranja: std_logic_vector(2 downto 0):="010";
-	constant rojo: std_logic_vector(2 downto 0):="001";
+	constant rojo: std_logic_vector(2 downto 0):="100";
 	constant pverde: std_logic_vector(2 downto 0):="100"; --(100 verde, 010 rojo, 101 verde parpadeo)
 	constant pverdeparpadeo: std_logic_vector(2 downto 0):="101";
 	constant projo: std_logic_vector(2 downto 0) :="010";
-	
-	--Para lógica negativa
+----	
+--	Para lógica negativa
+
 --	constant verde: std_logic_vector(2 downto 0):="011"; --(011 es verde, 101 naranja, 110 rojo)
 --	constant naranja: std_logic_vector(2 downto 0):="101";
 --	constant rojo: std_logic_vector(2 downto 0):="110";
 --	constant pverde: std_logic_vector(2 downto 0):="011"; --(011 es verde, 101 rojo, 010 verde parpadeo)
 --	constant pverdeparpadeo: std_logic_vector(2 downto 0):="010";
 --	constant projo: std_logic_vector(2 downto 0) :="101";
+	constant pruebas: std_logic_vector(2 downto 0) :="111";
+	constant pruebas2: std_logic_vector(2 downto 0) :="000";
 
 	constant tambar						:integer:=4;			--tiempo máximo que van a estar los semaforos en ambar y los de los peatones parpadeando
 	constant tesperapeatones			:integer:=5;			--tiempo máximo a esperar después de pulsar el botón para que pase a ambar
@@ -105,11 +109,12 @@ architecture Behavioral of MEstados is
 		
 ----------------- PRÓXIMO ESTADO -------------	
 	
-	proximo_estado: process(current_state, cambio_estado, sensorTR, sensorCS, pulsadorPS, pulsadorPP)
+	proximo_estado: process(current_state, cambio_estado, sensorTRin, sensorTRout, sensorCS, pulsadorPS, pulsadorPP)
 		begin
+		next_state<=current_state;
 			case current_state is
 				when s0 =>
-					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
+					if sensorTRin='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
 					elsif sensorCS=value then
 						next_state <= s11;
@@ -119,7 +124,7 @@ architecture Behavioral of MEstados is
 			
 				when s1 =>
 					tiempo <= tambar;
-					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
+					if sensorTRin='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
 					elsif cambio_estado = '1' then
 						next_state <= aux2; 
@@ -127,7 +132,7 @@ architecture Behavioral of MEstados is
 		
 				when s2 =>
 					tiempo <= tcarreterasecundaria;
-					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
+					if sensorTRin='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;
 					elsif pulsadorPS=value then
 						next_state <= aux3;
@@ -137,14 +142,14 @@ architecture Behavioral of MEstados is
 						
 				when s3 =>
 					tiempo <= tambar;
-					if sensorTR=value then			-- si viene el tren, estado de emergencia T1
+					if sensorTRin='1' then			-- si viene el tren, estado de emergencia T1
 						next_state <= t1;	
 					elsif cambio_estado = '1' then
 						next_state <= s0; 
 					end if;
 			
 				when t1 =>
-					if sensorTR=not(value) then
+					if sensorTRout='1' then
 						next_state <= t2;
 					end if;
 
@@ -156,19 +161,25 @@ architecture Behavioral of MEstados is
 					
 				when s11 =>
 					tiempo <= tesperacoches;
-					if cambio_estado = '1' then
+					if sensorTRin='1' then			-- si viene el tren, estado de emergencia T1
+						next_state <= t1;	
+					elsif cambio_estado = '1' then
 						next_state <= aux1;
 					end if;
 					
 				when s12 =>
 					tiempo <= tesperapeatones;
-					if cambio_estado = '1' then
+					if sensorTRin='1' then			-- si viene el tren, estado de emergencia T1
+						next_state <= t1;	
+					elsif cambio_estado = '1' then
 						next_state <= aux1;
 					end if;				
 				
 				when s13 =>
 					tiempo <= tesperapeatones;
-					if cambio_estado = '1' then
+					if sensorTRin='1' then			-- si viene el tren, estado de emergencia T1
+						next_state <= t1;	
+					elsif cambio_estado = '1' then
 						next_state <= aux4;
 					end if;
 					
@@ -308,6 +319,14 @@ architecture Behavioral of MEstados is
 					trainIN  <= '0';
 					trainOUT <= '1';
 					resetcontador <= '0';
+			when others =>
+					SPrincipal<=verde;
+					SSecundario<=verde;
+					PPrincipal<=pverde;
+					PSecundario<=pverde;
+					trainIN  <= '1';
+					trainOUT <= '1';
+					resetcontador <= '1';
 		end case;
 	end process;
 	

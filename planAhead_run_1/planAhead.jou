@@ -1,0 +1,69 @@
+#-----------------------------------------------------------
+# PlanAhead v14.1 (64-bit)
+# Build 179419 by xbuild on Thu Apr 26 11:43:29 MDT 2012
+# Start of session at: Mon Jan 09 11:43:41 2017
+# Process ID: 1860
+# Log file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_1/planAhead.log
+# Journal file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_1/planAhead.jou
+#-----------------------------------------------------------
+start_gui
+source C:/Users/sed/Desktop/Semaforos-SED/pa.fromNetlist.tcl
+set_property iostandard LVCMOS33 [get_ports [list {PPrincipalTop[1]} {PPrincipalTop[0]} {PSecundarioTop[1]} {PSecundarioTop[0]} {SPrincipal[2]} {SPrincipal[1]} {SPrincipal[0]} {SSecundario[2]} {SSecundario[1]} {SSecundario[0]} sensorTR pulsadorPP pulsadorPS rst clkt9 trainIN trainOUT sensorCS]]
+set_property package_pin "" [get_ports [list  {PPrincipalTop[0]}]]
+set_property package_pin "" [get_ports [list  sensorTR]]
+startgroup
+set_property package_pin L14 [get_ports rst]
+endgroup
+startgroup
+set_property package_pin D6 [get_ports sensorTR]
+endgroup
+startgroup
+set_property package_pin C6 [get_ports sensorCS]
+endgroup
+startgroup
+set_property package_pin A13 [get_ports pulsadorPP]
+endgroup
+startgroup
+set_property package_pin B14 [get_ports pulsadorPS]
+endgroup
+set_property package_pin "" [get_ports [list  {SSecundario[1]}]]
+startgroup
+set_property package_pin D15 [get_ports {SSecundario[0]}]
+endgroup
+startgroup
+set_property package_pin E15 [get_ports {SSecundario[1]}]
+endgroup
+startgroup
+set_property package_pin F15 [get_ports {SSecundario[2]}]
+endgroup
+startgroup
+set_property package_pin C16 [get_ports {SPrincipal[0]}]
+endgroup
+startgroup
+set_property package_pin D16 [get_ports {SPrincipal[1]}]
+endgroup
+startgroup
+set_property package_pin E16 [get_ports {SPrincipal[2]}]
+endgroup
+startgroup
+set_property package_pin G15 [get_ports {PSecundarioTop[0]}]
+endgroup
+startgroup
+set_property package_pin H15 [get_ports {PSecundarioTop[1]}]
+endgroup
+set_property package_pin "" [get_ports [list  {PPrincipalTop[1]}]]
+startgroup
+set_property package_pin J16 [get_ports {PPrincipalTop[0]}]
+endgroup
+save_design
+startgroup
+set_property package_pin K15 [get_ports {PPrincipalTop[1]}]
+endgroup
+startgroup
+set_property package_pin D11 [get_ports trainIN]
+endgroup
+startgroup
+set_property package_pin R10 [get_ports trainOUT]
+endgroup
+save_design -force
+refresh_design

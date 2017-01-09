@@ -1,0 +1,10 @@
+#-----------------------------------------------------------
+# PlanAhead v14.1 (64-bit)
+# Build 179419 by xbuild on Thu Apr 26 11:43:29 MDT 2012
+# Start of session at: Mon Jan 09 16:39:02 2017
+# Process ID: 5052
+# Log file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_4/planAhead.log
+# Journal file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_4/planAhead.jou
+#-----------------------------------------------------------
+start_gui
+source C:/Users/sed/Desktop/Semaforos-SED/pa.fromHdl.tcl

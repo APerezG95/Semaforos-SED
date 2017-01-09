@@ -40,13 +40,15 @@ entity top is
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; --
-			  sensorTR:	in STD_LOGIC;
+			  sensorTRin:	in STD_LOGIC;
+			  sensorTRout:  in STD_LOGIC; 
 			  SPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 es verde, 010 naranja, 001 rojo)
 			  SSecundario: out STD_LOGIC_VECTOR(2 downto 0);
 			  PPrincipalTop: out STD_LOGIC_VECTOR(1 downto 0); --(10 es verde, 01 es rojo)
 			  PSecundarioTop: out STD_LOGIC_VECTOR(1 downto 0);	
            trainIN  : out  STD_LOGIC; -- Semáforo para girar a la derecha
-           trainOUT : out  STD_LOGIC -- Semáforo en ámbar
+           trainOUT : out  STD_LOGIC; -- Semáforo en ámbar
+			  leds: out STD_LOGIC_VECTOR (6 downto 0)
 		);
 end top;
 
@@ -61,7 +63,8 @@ architecture Behavioral of top is
 			  pulsadorPP : in  STD_LOGIC; -- Pulsador del semáforo de peatones principal
 			  pulsadorPS : in  STD_LOGIC; -- Pulsador del semáforo de peatones secundario
 			  sensorCS: in STD_LOGIC; -- Sensor de vehículos en carretera secundaria
-			  sensorTR: in STD_LOGIC; -- Sensor que detecta la presencia de un tren. Funciona por nivel. Mientras está a 1, hay tren en la vía. Cuando se deja de pulsar, se va.
+			  sensorTRin: in STD_LOGIC; -- Sensor que detecta que ha llegado un tren
+			  sensorTRout: in STD_LOGIC; -- Sensor que detecta que se ha ido un tren
            SPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 es verde, 010 naranja, 001 rojo)
 			  SSecundario: out STD_LOGIC_VECTOR(2 downto 0);
 			  PPrincipal: out STD_LOGIC_VECTOR(2 downto 0); --(100 verde, 010 rojo, 101 verde parpadeo)
@@ -95,7 +98,15 @@ architecture Behavioral of top is
    port ( clk : in  STD_LOGIC;
            reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
-			  cambio_estado: out STD_LOGIC
+			  cambio_estado: out STD_LOGIC;
+			  cuenta: out integer range 0 to 9
+	);
+	end component;
+	
+	component decoder is
+	Port(
+		cuenta: in integer range 0 to 9;
+		led: out STD_LOGIC_VECTOR(6 downto 0)
 	);
 	end component;
 		
@@ -109,21 +120,44 @@ signal parpadeosignal: std_logic;
 
 signal resetcnt: std_logic;
 signal cuenta: integer range 0 to 120;
+signal ledsignal: integer range 0 to 9;
 signal PPrincipalaux2,PPrincipalaux0,PSecundarioaux2,PSecundarioaux0: std_logic;
 signal cambio: std_logic;
 
 
 begin
-	Inst_fsm: MEstados Port map(
-			  fastclk=>clksignal,
+--	Inst_fsm: MEstados Port map(
+--			  fastclk=>clkt9,
+--			  rst=>rst,
+--			  cambio_estado=>	cambio,	
+--			  tiempo=>cuenta,
+--			  resetcontador=>resetcnt,
+--			  pulsadorPP=>pulsadorPP,
+--			  pulsadorPS=>pulsadorPS,
+--			  sensorCS=>sensorCS, 
+--			  sensorTR=>sensorTR, 
+--           SPrincipal=>SPrincipal,
+--			  SSecundario=>SSecundario,
+--			  PPrincipal(0)=>PPrincipaltop(1),
+--			  PPrincipal(1)=>PPrincipaltop(0),
+--			  PPrincipal(2)=>PPrincipalaux2,
+--			  PSecundario(0)=>PSecundariotop(1),
+--			  PSecundario(1)=>PSecundariotop(0),
+--			  PSecundario(2)=>PSecundarioaux2,
+--           trainIN=>trainIN,
+--           trainOUT=>trainOUT
+			  
+			  Inst_fsm: MEstados Port map(
+			  fastclk=>clkt9,
 			  rst=>rst,
 			  cambio_estado=>	cambio,	
-			  tiempo=>cuenta,
+			  tiempo=> cuenta,
 			  resetcontador=>resetcnt,
 			  pulsadorPP=>pulsadorPP,
 			  pulsadorPS=>pulsadorPS,
 			  sensorCS=>sensorCS, 
-			  sensorTR=>sensorTR, 
+			  sensorTRin=>sensorTRin,
+			  sensorTRout=>sensorTRout,
            SPrincipal=>SPrincipal,
 			  SSecundario=>SSecundario,
 			  PPrincipal(0)=>PPrincipalaux0,
@@ -165,12 +199,18 @@ begin
 			blinkenable=>PSecundarioaux0,
 			clk=>parpadeosignal,
 			salida=>PSecundariotop(1)
-	);
+			);
+
 	Inst_Contador:contador Port map (
 			clk=>clksignal,
          reset=>resetcnt,
 			tiempo=>cuenta,
-			cambio_estado=>cambio
+			cambio_estado=>cambio,
+			cuenta=>ledsignal
+	);
+	Inst_Decodificador: decoder Port map(
+			cuenta=>ledsignal,
+			led=>leds
 	);
 	
 

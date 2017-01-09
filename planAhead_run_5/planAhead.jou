@@ -1,0 +1,60 @@
+#-----------------------------------------------------------
+# PlanAhead v14.1 (64-bit)
+# Build 179419 by xbuild on Thu Apr 26 11:43:29 MDT 2012
+# Start of session at: Mon Jan 09 19:05:35 2017
+# Process ID: 3416
+# Log file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_5/planAhead.log
+# Journal file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_5/planAhead.jou
+#-----------------------------------------------------------
+start_gui
+source C:/Users/sed/Desktop/Semaforos-SED/pa.fromNetlist.tcl
+startgroup
+set_property package_pin F12 [get_ports {leds[0]}]
+endgroup
+startgroup
+set_property package_pin G12 [get_ports {leds[1]}]
+endgroup
+startgroup
+set_property package_pin H14 [get_ports {leds[2]}]
+endgroup
+startgroup
+set_property package_pin H13 [get_ports {leds[3]}]
+endgroup
+startgroup
+set_property package_pin J14 [get_ports {leds[4]}]
+endgroup
+startgroup
+set_property package_pin J13 [get_ports {leds[5]}]
+endgroup
+startgroup
+set_property package_pin F12 [get_ports {leds[0]}]
+endgroup
+set_property package_pin "" [get_ports [list  {leds[6]}]]
+startgroup
+set_property package_pin F12 [get_ports {leds[0]}]
+endgroup
+startgroup
+set_property package_pin E14 [get_ports {leds[6]}]
+endgroup
+startgroup
+set_property package_pin G13 [get_ports {leds[5]}]
+endgroup
+startgroup
+set_property package_pin N15 [get_ports {leds[4]}]
+endgroup
+startgroup
+set_property package_pin P15 [get_ports {leds[3]}]
+endgroup
+startgroup
+set_property package_pin R16 [get_ports {leds[2]}]
+endgroup
+startgroup
+set_property package_pin F13 [get_ports {leds[1]}]
+endgroup
+startgroup
+set_property package_pin N16 [get_ports {leds[0]}]
+endgroup
+save_design
+set_property iostandard LVCMOS33 [get_ports [list {leds[0]} {leds[1]} {leds[2]} {leds[3]} {leds[4]} {leds[5]} {leds[6]}]]
+save_design
+exit

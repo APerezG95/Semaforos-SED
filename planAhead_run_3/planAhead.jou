@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# PlanAhead v14.1 (64-bit)
+# Build 179419 by xbuild on Thu Apr 26 11:43:29 MDT 2012
+# Start of session at: Mon Jan 09 15:44:42 2017
+# Process ID: 4192
+# Log file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_3/planAhead.log
+# Journal file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_3/planAhead.jou
+#-----------------------------------------------------------
+start_gui
+source C:/Users/sed/Desktop/Semaforos-SED/pa.fromHdl.tcl
+startgroup
+set_property package_pin D8 [get_ports {PSecundarioTop[1]}]
+endgroup

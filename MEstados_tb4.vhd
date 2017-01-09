@@ -49,7 +49,8 @@ ARCHITECTURE behavior OF MEstados_tb4 IS
          pulsadorPP : IN  std_logic;
          pulsadorPS : IN  std_logic;
          sensorCS : IN  std_logic;
-         sensorTR : IN  std_logic;
+         sensorTRin : IN  std_logic;
+			sensorTRout : IN  std_logic;
          SPrincipal : OUT  std_logic_vector(2 downto 0);
          SSecundario : OUT  std_logic_vector(2 downto 0);
          PPrincipal : OUT  std_logic_vector(2 downto 0);
@@ -67,7 +68,8 @@ ARCHITECTURE behavior OF MEstados_tb4 IS
    signal pulsadorPP : std_logic := '0';
    signal pulsadorPS : std_logic := '0';
    signal sensorCS : std_logic := '0';
-   signal sensorTR : std_logic := '0';
+   signal sensorTRin : std_logic := '0';
+	signal sensorTRout : std_logic := '0';
 
  	--Outputs
 	signal tiempo : integer range 0 to 120 := 0;
@@ -94,7 +96,8 @@ BEGIN
           pulsadorPP => pulsadorPP,
           pulsadorPS => pulsadorPS,
           sensorCS => sensorCS,
-          sensorTR => sensorTR,
+          sensorTRin => sensorTRin,
+			 sensorTRout => sensorTRout,
           SPrincipal => SPrincipal,
           SSecundario => SSecundario,
           PPrincipal => PPrincipal,
@@ -115,9 +118,9 @@ BEGIN
    -- Stimulus process
    Peatones_principal_stim_proc: process
    begin
-		pulsadorPP<='0', '1' after 1000 ms, '0' after 2010ms;--, '1' after 4000 ms;
-		cambio_estado<='0', '1' after 2000 ms, '0' after 2005 ms, '1' after 3000 ms, '0' after 3005 ms, '1' after 4000 ms, '0' after 4010 ms, '1' after 5000 ms, '0' after 5010 ms;
-		--rst<='0', '1' after 2500ms;
+		--pulsadorPP<='0', '1' after 1000 ms, '0' after 2010ms;--, '1' after 4000 ms;
+		--cambio_estado<='0', '1' after 2000 ms, '0' after 2005 ms, '1' after 3000 ms, '0' after 3005 ms, '1' after 4000 ms, '0' after 4010 ms, '1' after 5000 ms, '0' after 5010 ms;
+		rst<='0', '1' after 2500ms;
 		wait; --for tsimulacion;
 
 		

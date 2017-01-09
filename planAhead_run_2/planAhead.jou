@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# PlanAhead v14.1 (64-bit)
+# Build 179419 by xbuild on Thu Apr 26 11:43:29 MDT 2012
+# Start of session at: Mon Jan 09 13:07:05 2017
+# Process ID: 4716
+# Log file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_2/planAhead.log
+# Journal file: C:/Users/sed/Desktop/Semaforos-SED/planAhead_run_2/planAhead.jou
+#-----------------------------------------------------------
+start_gui
+source C:/Users/sed/Desktop/Semaforos-SED/pa.fromNetlist.tcl
+startgroup
+set_property package_pin A13 [get_ports pulsadorPP]
+endgroup

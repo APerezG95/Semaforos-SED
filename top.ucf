@@ -1,0 +1,68 @@
+
+
+NET "PPrincipalTop[1]" IOSTANDARD = LVCMOS33;
+NET "PPrincipalTop[0]" IOSTANDARD = LVCMOS33;
+NET "PSecundarioTop[1]" IOSTANDARD = LVCMOS33;
+NET "PSecundarioTop[0]" IOSTANDARD = LVCMOS33;
+NET "SPrincipal[2]" IOSTANDARD = LVCMOS33;
+NET "SPrincipal[1]" IOSTANDARD = LVCMOS33;
+NET "SPrincipal[0]" IOSTANDARD = LVCMOS33;
+NET "SSecundario[2]" IOSTANDARD = LVCMOS33;
+NET "SSecundario[1]" IOSTANDARD = LVCMOS33;
+NET "SSecundario[0]" IOSTANDARD = LVCMOS33;
+NET "pulsadorPP" IOSTANDARD = LVCMOS33;
+NET "pulsadorPS" IOSTANDARD = LVCMOS33;
+NET "rst" IOSTANDARD = LVCMOS33;
+NET "clkt9" IOSTANDARD = LVCMOS33;
+NET "trainIN" IOSTANDARD = LVCMOS33;
+NET "trainOUT" IOSTANDARD = LVCMOS33;
+NET "sensorCS" IOSTANDARD = LVCMOS33;
+
+
+NET "rst" LOC = L14;
+NET "sensorCS" LOC = C6;
+NET "pulsadorPP" LOC = A13;
+NET "pulsadorPS" LOC = B14;
+NET "SSecundario[0]" LOC = F15;
+NET "SSecundario[1]" LOC = P10;
+NET "SSecundario[2]" LOC = D15;
+NET "SPrincipal[0]" LOC = E16;
+NET "SPrincipal[1]" LOC = D16;
+NET "SPrincipal[2]" LOC = C16;
+NET "PSecundarioTop[1]" LOC = D8;
+NET "PPrincipalTop[0]" LOC = A3;
+NET "PPrincipalTop[1]" LOC = D10;
+NET "trainIN" LOC = N11;
+
+
+NET "clkt9" LOC = T9;
+NET "PSecundarioTop[0]" LOC = C9;
+NET "trainOUT" LOC = C11;
+
+
+NET "sensorTRin" LOC = L13;
+NET "sensorTRout" LOC = M14;
+
+
+NET "sensorTRin" IOSTANDARD = LVCMOS33;
+NET "sensorTRout" IOSTANDARD = LVCMOS33;
+
+# PlanAhead Generated physical constraints 
+
+NET "leds[6]" LOC = E14;
+NET "leds[5]" LOC = G13;
+NET "leds[4]" LOC = N15;
+NET "leds[3]" LOC = P15;
+NET "leds[2]" LOC = R16;
+NET "leds[1]" LOC = F13;
+NET "leds[0]" LOC = N16;
+
+# PlanAhead Generated IO constraints 
+
+NET "leds[0]" IOSTANDARD = LVCMOS33;
+NET "leds[1]" IOSTANDARD = LVCMOS33;
+NET "leds[2]" IOSTANDARD = LVCMOS33;
+NET "leds[3]" IOSTANDARD = LVCMOS33;
+NET "leds[4]" IOSTANDARD = LVCMOS33;
+NET "leds[5]" IOSTANDARD = LVCMOS33;
+NET "leds[6]" IOSTANDARD = LVCMOS33;

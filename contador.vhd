@@ -33,7 +33,8 @@ entity contador is
     Port ( clk : in  STD_LOGIC;
            reset : in  STD_LOGIC;
 			  tiempo: in integer range 0 to 120;
-			  cambio_estado: out STD_LOGIC
+			  cambio_estado: out STD_LOGIC;
+			  cuenta: out integer range 0 to 9
 			  );
 end contador;
 
@@ -62,6 +63,7 @@ process(cnt,tiempo)
 				cambio_estado<='0';
 			end if;
 end process;
+cuenta<=cnt;
 
 end Behavioral;
 

@@ -44,7 +44,8 @@ ARCHITECTURE behavior OF contador_tb2 IS
          clk : IN  std_logic;
          reset : IN  std_logic;
          tiempo :  integer range 0 to 120:=0;
-         cambio_estado : OUT  std_logic
+         cambio_estado : OUT  std_logic;
+			cuenta: out integer range 0 to 9
         );
     END COMPONENT;
     
